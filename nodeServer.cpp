@@ -141,17 +141,17 @@ void * serverthread(void *args)
 
       		f(i,0,M)
       		{
-      			msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
+      			if(neighbourSet[i].nodeId != "empt")
+      				msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
       		}
 
+      		int client_fd = createConnection(token[2], stoi(token[3]));
       		send(client_fd ,msg.c_str() ,msg.size() ,0);
-
       		cout<<"NT send"<<msg<<endl; 
       }
       else if( token[0] == "neighbourSet")
       {
       		cout<<"NT got "<<endl;
-
       		for(int i=1 ;i<token.size() ;i+=3)
       		{
       			NodeAddress temp;

@@ -53,7 +53,7 @@ void joinHandler(vector<string> command)
 {
 	int server_fd = createConnection(command[2] ,stoi(command[3]));
 
-	if( server_fd == - 1)
+	if( server_fd == -1)
 	{
 		cout<<"Error in connection"<<endl;
 		return ;
@@ -62,9 +62,7 @@ void joinHandler(vector<string> command)
 	cout<<"Connection Establishd"<<endl;
 	
 	string cmd = "join " + selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port);
-
-	//cout<<cmd<<endl;
-	s
+	
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 }
 
@@ -95,7 +93,6 @@ void client()
 		getline(cin,command);
 
 		vector<string> command_splited = split(command);
-
 
 		if( command_splited[0] == "join" && command_splited.size() == 4) 
 		{
