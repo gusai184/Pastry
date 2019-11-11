@@ -14,3 +14,6 @@ nodeClient.o:nodeClient.cpp
 
 proximity.o:proximity.cpp
 	g++ -c proximity.cpp
+
+r:
+	rm main.o nodeServer.o nodeClient.o proximity.o

@@ -22,6 +22,64 @@ int index(char ch)
 		return ch - '0';
 }
 
+int hax_dec(string s)
+{
+	int base = 1; 
+    int dec_val = 0; 
+     
+    int len = s.size();
+
+    for (int i=len-1; i>=0; i--) 
+    {    
+        if (s[i]>='0' && s[i]<='9') 
+        { 
+            dec_val += (s[i] - 48)*base;    
+            base = base * 16; 
+        } 
+        else if (s[i]>='a' && s[i]<='f') 
+        { 
+        	if( s[i] == 'a')
+        	{
+        		dec_val += (10)*base;	
+        	}
+        	else if( s[i] == 'b')
+        	{
+        		dec_val += (11)*base;
+        	}
+        	else if( s[i] == 'c')
+        	{
+        		dec_val += (12)*base;
+        	}
+        	else if( s[i] == 'd')
+        	{
+        		dec_val += (13)*base;
+        	}
+        	else if( s[i] == 'e')
+        	{
+        		dec_val += (14)*base;
+        	}
+        	else if( s[i] == 'f')
+        	{
+        		dec_val += (15)*base;
+        	}
+                 
+            base = base*16; 
+        } 
+    } 
+      
+    return dec_val; 
+}
+
+bool compare(NodeAddress i1, NodeAddress i2) 
+{ 
+    return (i1.nodeId < i2.nodeId); 
+} 
+
+bool compare1(pair<double, NodeAddress> p1, pair<double, NodeAddress> p2) 
+{ 
+    return (p1.first < p2.first);
+}
+
 void createNode(string ip, int port)
 {
 	NodeAddress temp;
@@ -94,10 +152,79 @@ void print()
 	cout<<endl;
 }
 
-bool compare(pair<double, NodeAddress> p1, pair<double, NodeAddress> p2) 
-{ 
-    return (p1.first < p2.first);
-} 
+void addToLeafSet(NodeAddress n)
+{
+	
+	int idnew = hax_dec(n.nodeId);
+	int idself = hax_dec(selfAdd.nodeId);
+
+	cout<<idnew<<" "<<idself<<endl;
+	if( idnew < idself) 
+	{
+		cout<<"hello";
+		int index = 0;
+
+		while( index<(L/2) && leafSet[index].nodeId != "empt")
+		{
+			index++;
+		}
+
+		if( index < L/2 )
+		{
+			leafSet[index].nodeId = n.nodeId;
+			leafSet[index].ip = n.ip;
+			leafSet[index].port = n.port;
+
+			sort(leafSet.begin() ,leafSet.begin()+index + 1 ,compare);
+		}
+		else
+		{
+			int idfirst = hax_dec(leafSet[0].nodeId);
+
+			if( idnew > idfirst)
+			{
+				leafSet[0].nodeId = n.nodeId;
+				leafSet[0].ip = n.ip;
+				leafSet[0].port = n.port;
+
+				sort(leafSet.begin() ,leafSet.begin() + L/2 ,compare);
+			}
+		}
+	}
+	else
+	{
+		int index = L/2;
+
+		while( index<(L) && leafSet[index].nodeId != "empt")
+		{
+			index++;
+		}
+
+		if( index < L )
+		{
+			leafSet[index].nodeId = n.nodeId;
+			leafSet[index].ip = n.ip;
+			leafSet[index].port = n.port;
+
+			sort( leafSet.begin()+L/2 ,leafSet.begin() + index+1 ,compare);
+		}
+		else
+		{
+			int idlast = hax_dec(leafSet[L-1].nodeId);
+
+			if( idnew < idlast)
+			{
+				leafSet[L-1].nodeId = n.nodeId;
+				leafSet[L-1].ip = n.ip;
+				leafSet[L-1].port = n.port;
+
+				sort(leafSet.begin()+L/2 ,leafSet.end(),compare);
+			}
+		}
+	}
+
+}
+
 
 void addToNeighbourSet(NodeAddress newNeighbour)
 {
@@ -105,7 +232,7 @@ void addToNeighbourSet(NodeAddress newNeighbour)
 	if(neighbourSet[M-1].first > dist && newNeighbour.nodeId != nodeId)
 	{
 		neighbourSet[M-1] = make_pair(dist, newNeighbour);
-		sort(neighbourSet.begin(), neighbourSet.end(), compare);
+		sort(neighbourSet.begin(), neighbourSet.end(), compare1);
 	}
 }
 
@@ -119,8 +246,7 @@ void recieveLeafSet(vector<string> token)
 		temp.nodeId = token[i];
 		temp.ip = token[i+1];
 		temp.port = stoi(token[i+2]);
-		cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
-		//add to leaf set
+		addToLeafSet(temp);
 	}
 }
 
@@ -172,14 +298,7 @@ void receiveNeighbourSet(vector<string> token)
 void serverJoinHandler(vector<string> token)
 {
 	sendNeighbourSet(token);
-	NodeAddress temp;
-	temp.nodeId = token[1];
-	temp.ip = token[2];
-	temp.port = stoi(token[3]);
-	addToNeighbourSet(temp);
-	printneighbourSet();
-	cout<<endl;
-	// sendLeafSet(token);
+	sendLeafSet(token);
 }
 
 void * serverthread(void *args)

@@ -50,6 +50,7 @@ void sendNeighbourSet(vector<string> token);
 void receiveNeighbourSet(vector<string> token);
 void recieveLeafSet(vector<string> token);
 void addToNeighbourSet(NodeAddress newNeighbour);
+void addToLeafSet(NodeAddress n);
 
 //client functions
 void joinHandler(vector<string> command);
