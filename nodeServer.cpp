@@ -95,45 +95,41 @@ void print()
 
 void * serverthread(void *args)
 {
-	int listener_port, n, listener_fd;
-	struct sockaddr_in listener_address;
-	struct hostent *listener_ip;
-	char buffer[BUFFER_SIZE];
-    
-    
-	listener_port = selfAdd.port;
+   int listener_port = selfAdd.port;
+   int listener_fd,   peerlen, n;
+   struct sockaddr_in listener_address, peer_address;
 
-	listener_ip = gethostbyname(selfAdd.ip.c_str());
-    if (listener_ip == NULL) {
-    	perror("ERROR, no such host\n");
-        exit(0);
-    }
- 	
- 	listener_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (listener_fd < 0) {   	
-    	perror("ERROR opening socket");
-        exit(1);
-    }
-	
+   listener_fd = socket(AF_INET, SOCK_STREAM, 0);
+   if (listener_fd < 0) {
+      perror("ERROR opening socket");
+      exit(1);
+   }
+   
+   bzero((char *) &listener_address, sizeof(listener_address));
+   
+   listener_address.sin_family = AF_INET;
+   listener_address.sin_addr.s_addr = INADDR_ANY;
+   listener_address.sin_port = htons(listener_port);
 
-    bzero((char *) &listener_address, sizeof(listener_address));
-    listener_address.sin_family = AF_INET;
-    bcopy((char *)listener_ip->h_addr, (char *)&listener_address.sin_addr.s_addr, listener_ip->h_length);
-    listener_address.sin_port = htons(listener_port);
-    
-    if (connect(listener_fd, (struct sockaddr*)&listener_address, sizeof(listener_address)) < 0) {
-        cout<<"error no is "<<errno<<endl;
-        perror("ERROR connecting");
-        return NULL;
-    }
+   if (bind(listener_fd, (struct sockaddr *) &listener_address, sizeof(listener_address)) < 0) {
+      perror("ERROR on binding");
+      exit(1);
+   }
+   
+   listen(listener_fd,SOMAXCONN);
+   peerlen = sizeof(peer_address);
+   
+   while(1)
+   {
+      int *peer_fd_ptr= (int *)malloc(sizeof(int));
+      *peer_fd_ptr = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
 
-    strcpy(buffer, "Connection esatablished to server.....");
-    n = send(listener_fd, buffer, BUFFER_SIZE, 0);
-    if(n<0)
-    {
-	  perror("Error while sending data");
-      return NULL; 
-    }
+      if (*peer_fd_ptr < 0) {
+         perror("ERROR on acceptingg peer request");
+         continue;
+      }
+      cout<<"Connection established in listener "<<endl;
+   }
 
 }
 

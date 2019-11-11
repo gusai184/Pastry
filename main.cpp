@@ -16,20 +16,30 @@ int DIGITS = ROW;
 
 string getIP()
 {
-	char hostbuffer[256]; 
-    struct hostent *host_entry; 
-  
-    // To retrieve hostname 
-    gethostname(hostbuffer, sizeof(hostbuffer)); 
-  
-    // To retrieve host information 
-    host_entry = gethostbyname(hostbuffer);  
-  
-    // To convert an Internet network 
-    // address into ASCII string 
-    char *IPbuffer = inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0])); 
+	struct ifaddrs * ifAddrStruct=NULL;
+    struct ifaddrs * ifa=NULL;
+    void * tmpAddrPtr=NULL;
+	  string ret;
 
-    return string(IPbuffer);
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+        if (!ifa->ifa_addr)
+            continue;
+        if (ifa->ifa_addr->sa_family == AF_INET)
+        { // IP4
+            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+      		if(ifa->ifa_name[0] == 'w')
+            {
+  				ret = string(addressBuffer);
+  				if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+  				return ret;
+      			}
+        }
+    }
+    return ret;
 }
 
 vector<string> split(string s ,string del)
@@ -82,8 +92,6 @@ int main()
 	//Gets IP of the machine in string
 	string ip = getIP();
 	cout<<"IP Address Of Node :"<<ip<<endl;
-
-	ip = "127.0.0.1";
 	
 	//Create ID and Intialize Node Tables
 	createNode(ip, port);

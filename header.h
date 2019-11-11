@@ -13,7 +13,7 @@
 #include <pthread.h>
 #include <netinet/in.h>
 #include <string.h>
-
+#include <ifaddrs.h>
 #define BUFFER_SIZE 256
 #define N 65536 // Total Number of node in Network
 #define B 4 
