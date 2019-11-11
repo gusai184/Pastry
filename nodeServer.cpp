@@ -91,7 +91,71 @@ void print()
 	cout<<endl;
 }
 
+void recieveLeafSet(vector<string> token)
+{
 
+	cout<<endl<<"LeafSet received ... "<<endl;
+	for(int i=1 ;i<token.size() ;i+=3)
+	{
+		NodeAddress temp;
+		temp.nodeId = token[i];
+		temp.ip = token[i+1];
+		temp.port = stoi(token[i+2]);
+		cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
+		//add to leaf set
+	}
+}
+
+void sendLeafSet(vector<string> token)
+{
+	string msg = "leafSet "+ selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
+
+	f(i,0,L)
+	{
+		if(leafSet[i].nodeId != "empt")
+			msg += leafSet[i].nodeId + " " + leafSet[i].ip + " " + to_string(leafSet[i].port) + " "; 
+	}
+
+	int client_fd = createConnection(token[2], stoi(token[3]));
+	send(client_fd ,msg.c_str() ,msg.size() ,0);
+	cout<<endl<<"LeafSet sent .."<<msg<<endl; 	
+}
+
+
+void sendNeighbourSet(vector<string> token)
+{
+	string msg = "neighbourSet "+ selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
+
+	f(i,0,M)
+	{
+		if(neighbourSet[i].nodeId != "empt")
+			msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
+	}
+
+	int client_fd = createConnection(token[2], stoi(token[3]));
+	send(client_fd ,msg.c_str() ,msg.size() ,0);
+	cout<<endl<<"NeighbourSet sent .."<<endl; 
+}
+
+void receiveNeighbourSet(vector<string> token)
+{
+	cout<<endl<<"NeighbourSet received ... "<<endl;
+	for(int i=1 ;i<token.size() ;i+=3)
+	{
+		NodeAddress temp;
+		temp.nodeId = token[i];
+		temp.ip = token[i+1];
+		temp.port = stoi(token[i+2]);
+		cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
+	}
+}
+
+void serverJoinHandler(vector<string> token)
+{
+	sendNeighbourSet(token);
+	cout<<endl;
+	sendLeafSet(token);
+}
 
 void * serverthread(void *args)
 {
@@ -121,49 +185,32 @@ void * serverthread(void *args)
    
    while(1)
    {
-      int client_fd;
-      client_fd = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
+       int client_fd;
+       client_fd = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
 
-      if (client_fd < 0) {
-         perror("ERROR on acceptingg peer request");
-         continue;
-      }
+        if (client_fd < 0) {
+        	perror("ERROR on acceptingg peer request");
+        	continue;
+      	}
       
-      char cmd[BUFFER_SIZE];
+      	char cmd[BUFFER_SIZE];
+      	bzero(cmd,BUFFER_SIZE);
+	    int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
+        cout<<"Got message "<<cmd<<endl;
+        vector<string> token = split(string(cmd));
 
-      int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
-      cout<<"Got message "<<cmd<<endl;
-      vector<string> token = split(string(cmd));
-
-      if( token[0] == "join")
-      {
-      		string msg = "neighbourSet "+ selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
-
-      		f(i,0,M)
-      		{
-      			if(neighbourSet[i].nodeId != "empt")
-      				msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
-      		}
-
-      		int client_fd = createConnection(token[2], stoi(token[3]));
-      		send(client_fd ,msg.c_str() ,msg.size() ,0);
-      		cout<<"NT send"<<msg<<endl; 
-      }
-      else if( token[0] == "neighbourSet")
-      {
-      		cout<<"NT got "<<endl;
-      		for(int i=1 ;i<token.size() ;i+=3)
-      		{
-      			NodeAddress temp;
-      			temp.nodeId = token[i];
-      			temp.ip = token[i+1];
-      			temp.port = stoi(token[i+2]);
-      			
-      			cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
-      		}
-
-      		// ADD functions makese NT Tabel 
-      }
+        if( token[0] == "join")
+        {
+        	serverJoinHandler(token);
+        }
+        else if( token[0] == "neighbourSet")
+        {
+        	receiveNeighbourSet(token);
+        }
+        else if(token[0] == "leafSet")
+        {
+        	recieveLeafSet(token);
+        }
 
    }
 

@@ -7,7 +7,6 @@
 #include <unistd.h> 
 #include <errno.h> 
 #include <netdb.h> 
-
 #include <sys/types.h> 
 #include <sys/types.h> 
 #include <sys/socket.h> 
@@ -45,11 +44,13 @@ int index(char ch);
 //Server functions
 void * serverthread(void *args);
 void startServer();
+void sendLeafSet(vector<string> token);
+void sendNeighbourSet(vector<string> token);
+void receiveNeighbourSet(vector<string> token);
+void recieveLeafSet(vector<string> token);
 
 //client functions
 void joinHandler(vector<string> command);
 void client();
 vector<string> split(string s);
 int createConnection(string ip ,int port);
-
-
