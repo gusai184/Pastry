@@ -42,45 +42,6 @@ string getIP()
     return ret;
 }
 
-vector<string> split(string s ,string del)
-{
-	int pos = 0;
-	
-	string token;
-	
-	vector<string> res;
-
-	while ((pos = s.find(del)) != std::string::npos) 
-	{
-    	token = s.substr(0, pos);
-    	res.push_back(token);
-    	s.erase(0, pos + del.length());
-	}
-
-	return res;
-}
-
-void client()
-{
-	cout<<"Input Commands :"<<endl;
-
-	while(1)
-	{
-		string command;
-
-		getline(cin,command);
-
-		vector<string> command_splited = split(command ," ");
-
-		f(i,0,command_splited.size())
-		{
-			cout<<command_splited[i]<<endl;
-		}
-
-		break;
-	}
-}
-
 int main()
 {
 	cout<<"Enter PORT For Node :";
@@ -88,14 +49,14 @@ int main()
 	getline(cin,p);
 
 	int port = stoi(p);
-	cout<<port;
+	
 	//Gets IP of the machine in string
 	string ip = getIP();
-	cout<<"IP Address Of Node :"<<ip<<endl;
+	cout<<"IP Address Of Node :"<<ip<<endl<<endl;
 	
 	//Create ID and Intialize Node Tables
 	createNode(ip, port);
-	cout<<"Node created with nodeId = "<<nodeId<<endl;
+	cout<<"Node created with nodeId = "<<nodeId<<endl<<endl;
 	
 	//creates Server On thread 
 	startServer();

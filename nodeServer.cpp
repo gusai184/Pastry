@@ -102,7 +102,7 @@ void * serverthread(void *args)
    listener_fd = socket(AF_INET, SOCK_STREAM, 0);
    if (listener_fd < 0) {
       perror("ERROR opening socket");
-      exit(1);
+      return NULL;
    }
    
    bzero((char *) &listener_address, sizeof(listener_address));
@@ -113,7 +113,7 @@ void * serverthread(void *args)
 
    if (bind(listener_fd, (struct sockaddr *) &listener_address, sizeof(listener_address)) < 0) {
       perror("ERROR on binding");
-      exit(1);
+      return NULL;
    }
    
    listen(listener_fd,SOMAXCONN);
@@ -121,14 +121,50 @@ void * serverthread(void *args)
    
    while(1)
    {
-      int *peer_fd_ptr= (int *)malloc(sizeof(int));
-      *peer_fd_ptr = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
+      int client_fd;
+      client_fd = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
 
-      if (*peer_fd_ptr < 0) {
+      if (client_fd < 0) {
          perror("ERROR on acceptingg peer request");
          continue;
       }
-      cout<<"Connection established in listener "<<endl;
+      
+      char cmd[BUFFER_SIZE];
+
+      int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
+      cout<<"Got message "<<cmd<<endl;
+      vector<string> token = split(string(cmd));
+
+      if( token[0] == "join")
+      {
+      		string msg = "neighbourSet "+ selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
+
+      		f(i,0,M)
+      		{
+      			msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
+      		}
+
+      		send(client_fd ,msg.c_str() ,msg.size() ,0);
+
+      		cout<<"NT send"<<msg<<endl; 
+      }
+      else if( token[0] == "neighbourSet")
+      {
+      		cout<<"NT got "<<endl;
+
+      		for(int i=1 ;i<token.size() ;i+=3)
+      		{
+      			NodeAddress temp;
+      			temp.nodeId = token[i];
+      			temp.ip = token[i+1];
+      			temp.port = stoi(token[i+2]);
+      			
+      			cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
+      		}
+
+      		// ADD functions makese NT Tabel 
+      }
+
    }
 
 }
@@ -138,5 +174,5 @@ void startServer()
    pthread_t thread_id; 
    pthread_create(&thread_id, NULL, serverthread, (void *)NULL); 
 
-   cout<<"Node Server Running on : "<<selfAdd.ip<<" "<<selfAdd.port<<endl;
+   cout<<"Node Server Running on : "<<selfAdd.ip<<" "<<selfAdd.port<<endl<<endl;
 }

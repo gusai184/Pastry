@@ -7,6 +7,8 @@
 #include <unistd.h> 
 #include <errno.h> 
 #include <netdb.h> 
+
+#include <sys/types.h> 
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
@@ -14,6 +16,8 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <ifaddrs.h>
+#include <sstream>
+
 #define BUFFER_SIZE 256
 #define N 65536 // Total Number of node in Network
 #define B 4 
@@ -41,4 +45,11 @@ int index(char ch);
 //Server functions
 void * serverthread(void *args);
 void startServer();
+
+//client functions
+void joinHandler(vector<string> command);
+void client();
+vector<string> split(string s);
+int createConnection(string ip ,int port);
+
 
