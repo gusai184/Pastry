@@ -2,11 +2,16 @@
 #include <vector>
 #include <math.h>
 #include <unordered_map>
-
-
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <errno.h> 
+#include <netdb.h> 
+#include <sys/types.h> 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
 #include <pthread.h>
 #include <netinet/in.h>
-#include <netdb.h>
 #include <string.h>
 
 #define BUFFER_SIZE 256

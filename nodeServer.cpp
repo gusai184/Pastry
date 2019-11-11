@@ -1,7 +1,6 @@
 #include "header.h"
 #include "md5.cpp"
 
-
 extern string nodeId;
 extern NodeAddress selfAdd;
 extern vector<NodeAddress> leafSet;
@@ -142,4 +141,6 @@ void startServer()
 {
    pthread_t thread_id; 
    pthread_create(&thread_id, NULL, serverthread, (void *)NULL); 
+
+   cout<<"Node Server Running on : "<<selfAdd.ip<<" "<<selfAdd.port<<endl;
 }
