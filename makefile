@@ -1,7 +1,7 @@
 all:pastry
 
-pastry: main.o nodeServer.o nodeClient.o
-	g++  main.o nodeServer.o nodeClient.o -o pastry -lpthread
+pastry: main.o nodeServer.o nodeClient.o proximity.o
+	g++  main.o nodeServer.o nodeClient.o proximity.o -o pastry -lpthread
 
 main.o:main.cpp 
 	g++ -c main.cpp
@@ -11,3 +11,6 @@ nodeServer.o:nodeServer.cpp
 
 nodeClient.o:nodeClient.cpp
 	g++ -c nodeClient.cpp 
+
+proximity.o:proximity.cpp
+	g++ -c proximity.cpp

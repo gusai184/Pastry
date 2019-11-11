@@ -16,10 +16,11 @@
 #include <string.h>
 #include <ifaddrs.h>
 #include <sstream>
+#include <algorithm>
 
 #define BUFFER_SIZE 256
 #define N 65536 // Total Number of node in Network
-#define B 4 
+#define B 4
 #define f(i,a,b) for(int i=(int)a; i<(int)b; i++)
 
 using namespace std;
@@ -48,9 +49,13 @@ void sendLeafSet(vector<string> token);
 void sendNeighbourSet(vector<string> token);
 void receiveNeighbourSet(vector<string> token);
 void recieveLeafSet(vector<string> token);
+void addToNeighbourSet(NodeAddress newNeighbour);
 
 //client functions
 void joinHandler(vector<string> command);
 void client();
 vector<string> split(string s);
 int createConnection(string ip ,int port);
+
+//proximity
+double getProximity(string ip, int port);

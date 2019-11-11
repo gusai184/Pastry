@@ -3,7 +3,7 @@
 extern string nodeId;
 extern NodeAddress selfAdd;
 extern vector<NodeAddress> leafSet;
-extern vector<NodeAddress> neighbourSet;
+extern vector<pair<double, NodeAddress>> neighbourSet;
 extern vector<vector<NodeAddress>> routeTable;
 extern unordered_map<string, string> hashTable;
 

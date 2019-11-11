@@ -3,7 +3,7 @@
 string nodeId;
 NodeAddress selfAdd;
 vector<NodeAddress> leafSet;
-vector<NodeAddress> neighbourSet;
+vector<pair<double, NodeAddress>> neighbourSet;
 vector<vector<NodeAddress>> routeTable;
 unordered_map<string, string> hashTable;
 

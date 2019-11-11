@@ -4,7 +4,7 @@
 extern string nodeId;
 extern NodeAddress selfAdd;
 extern vector<NodeAddress> leafSet;
-extern vector<NodeAddress> neighbourSet;
+extern vector<pair<double, NodeAddress>> neighbourSet;
 extern vector<vector<NodeAddress>> routeTable;
 extern unordered_map<string, string> hashTable;
 
@@ -26,6 +26,9 @@ void createNode(string ip, int port)
 {
 	NodeAddress temp;
 	temp.nodeId = "empt";
+	pair<double, NodeAddress> t;
+	t.first = 9999.0;
+	t.second = temp;
 
 	nodeId = md5(ip + to_string(port)).substr(0, ROW);
 
@@ -35,7 +38,7 @@ void createNode(string ip, int port)
 	selfAdd.port = port;
 
 	leafSet.resize(L, temp);
-	neighbourSet.resize(M, temp);
+	neighbourSet.resize(M, t);
 	routeTable.resize(ROW);
 
 	f(i,0,ROW)
@@ -64,9 +67,9 @@ void printneighbourSet()
 {
 
 	cout<<"-------------------Neighbour Table---------------------"<<endl;
-	f(i,0,L)
-		cout<<neighbourSet[i].nodeId<<" ";
-	cout<<endl;
+	f(i,0,M)
+		if(neighbourSet[i].second.nodeId!="empt")
+			cout<<neighbourSet[i].second.nodeId<<":"<<neighbourSet[i].first << endl;
 }
 
 void printrouteTable()
@@ -89,6 +92,21 @@ void print()
 	cout<<endl;
 	printrouteTable();
 	cout<<endl;
+}
+
+bool compare(pair<double, NodeAddress> p1, pair<double, NodeAddress> p2) 
+{ 
+    return (p1.first < p2.first);
+} 
+
+void addToNeighbourSet(NodeAddress newNeighbour)
+{
+	double dist = getProximity(newNeighbour.ip, newNeighbour.port);
+	if(neighbourSet[M-1].first > dist && newNeighbour.nodeId != nodeId)
+	{
+		neighbourSet[M-1] = make_pair(dist, newNeighbour);
+		sort(neighbourSet.begin(), neighbourSet.end(), compare);
+	}
 }
 
 void recieveLeafSet(vector<string> token)
@@ -128,8 +146,8 @@ void sendNeighbourSet(vector<string> token)
 
 	f(i,0,M)
 	{
-		if(neighbourSet[i].nodeId != "empt")
-			msg += neighbourSet[i].nodeId + " " + neighbourSet[i].ip + " " + to_string(neighbourSet[i].port) + " "; 
+		if(neighbourSet[i].second.nodeId != "empt")
+			msg += neighbourSet[i].second.nodeId + " " + neighbourSet[i].second.ip + " " + to_string(neighbourSet[i].second.port) + " "; 
 	}
 
 	int client_fd = createConnection(token[2], stoi(token[3]));
@@ -146,15 +164,22 @@ void receiveNeighbourSet(vector<string> token)
 		temp.nodeId = token[i];
 		temp.ip = token[i+1];
 		temp.port = stoi(token[i+2]);
-		cout<<token[i]<<" "<<token[i+1]<<" "<<token[i+2]<<endl;
+		addToNeighbourSet(temp);
 	}
+	printneighbourSet();
 }
 
 void serverJoinHandler(vector<string> token)
 {
 	sendNeighbourSet(token);
+	NodeAddress temp;
+	temp.nodeId = token[1];
+	temp.ip = token[2];
+	temp.port = stoi(token[3]);
+	addToNeighbourSet(temp);
+	printneighbourSet();
 	cout<<endl;
-	sendLeafSet(token);
+	// sendLeafSet(token);
 }
 
 void * serverthread(void *args)
