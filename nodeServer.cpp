@@ -154,14 +154,18 @@ void print()
 
 void addToLeafSet(NodeAddress n)
 {
-	
+	if( n.nodeId == selfAdd.nodeId )
+		return ;
+
+	for(int i = 0; i < L; i++)
+		if( leafSet[i].nodeId == n.nodeId )
+			return;
+
 	int idnew = hax_dec(n.nodeId);
 	int idself = hax_dec(selfAdd.nodeId);
 
-	cout<<idnew<<" "<<idself<<endl;
 	if( idnew < idself) 
 	{
-		cout<<"hello";
 		int index = 0;
 
 		while( index<(L/2) && leafSet[index].nodeId != "empt")
@@ -228,8 +232,15 @@ void addToLeafSet(NodeAddress n)
 
 void addToNeighbourSet(NodeAddress newNeighbour)
 {
+	if(newNeighbour.nodeId == nodeId)
+		return;
+
+	for(int i = 0; i < M; i++)
+		if(newNeighbour.nodeId == newNeighbour[i].second.nodeId)
+			return;
+
 	double dist = getProximity(newNeighbour.ip, newNeighbour.port);
-	if(neighbourSet[M-1].first > dist && newNeighbour.nodeId != nodeId)
+	if(neighbourSet[M-1].first > dist)
 	{
 		neighbourSet[M-1] = make_pair(dist, newNeighbour);
 		sort(neighbourSet.begin(), neighbourSet.end(), compare1);
