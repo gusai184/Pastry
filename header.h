@@ -51,12 +51,19 @@ void receiveNeighbourSet(vector<string> token);
 void recieveLeafSet(vector<string> token);
 void addToNeighbourSet(NodeAddress newNeighbour);
 void addToLeafSet(NodeAddress n);
+int prefixMatch(string id1, string id2);
+void addToRouteTable(NodeAddress n);
+void receiveRoutingTable(vector<string> token);
+void sendRoutingTable(vector<string> token);
+int diff(string id1, string id2);
+
 
 //client functions
 void joinHandler(vector<string> command);
 void client();
 vector<string> split(string s);
 int createConnection(string ip ,int port);
+void broadCast();
 
 //proximity
 double getProximity(string ip, int port);

@@ -61,11 +61,107 @@ void joinHandler(vector<string> command)
 
 	cout<<"Connection Establishd"<<endl;
 	
-	string cmd = "join " + selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port);
+	string cmd = "join 0 " +selfAdd.ip + " " + to_string(selfAdd.port) + " " + selfAdd.nodeId;
 	
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
+
+	//broadCast();
 }
 
+void broadCast()
+{
+	cout<<"Broadcast FUnction"<<endl;
+	unordered_map <string, int> mp;
+	string msg = "broadcast ";
+	for(auto node : leafSet)
+	{
+		if(node.nodeId == "empt")
+			continue;
+
+		if(mp[node.nodeId])
+			continue;
+
+		msg += node.nodeId + " " + node.ip + " " + to_string(node.port) + " ";
+		mp[node.nodeId] = 1;
+	}
+
+	for(auto nNode : neighbourSet)
+	{
+		NodeAddress node = nNode.second;
+
+		if(node.nodeId == "empt")
+			continue;
+
+		if(mp[node.nodeId])
+			continue;
+
+		msg += node.nodeId + " " + node.ip + " " + to_string(node.port) + " ";
+		mp[node.nodeId] = 1;
+	}
+
+	f(i, 0, ROW)
+	{
+		f(j, 0, COL)
+		{
+			NodeAddress node = routeTable[i][j];
+			if(node.nodeId == "empt")
+				continue;
+
+			if(mp[node.nodeId])
+				continue;
+
+			msg += node.nodeId + " " + node.ip + " " + to_string(node.port) + " ";
+			mp[node.nodeId] = 1;
+		}
+	}
+
+	unordered_map <string, int> mp1;
+	for(auto node : leafSet)
+	{
+		if(node.nodeId == "empt")
+			continue;
+
+		if(mp1[node.nodeId])
+			continue;
+		cout << "broadcast msg send to " << node.nodeId << endl;
+		int fd = createConnection(node.ip, node.port);
+		send(fd, msg.c_str(), msg.size(), 0);
+		mp1[node.nodeId] = 1;
+	}
+
+	for(auto nNode : neighbourSet)
+	{
+		NodeAddress node = nNode.second;
+
+		if(node.nodeId == "empt")
+			continue;
+
+		if(mp1[node.nodeId])
+			continue;
+		cout << "broadcast msg send to " << node.nodeId << endl;
+		int fd = createConnection(node.ip, node.port);
+		send(fd, msg.c_str(), msg.size(), 0);
+		mp1[node.nodeId] = 1;
+	}
+
+	f(i, 0, ROW)
+	{
+		f(j, 0, COL)
+		{
+			NodeAddress node = routeTable[i][j];
+			if(node.nodeId == "empt" || node.nodeId == nodeId)
+				continue;
+
+			if(mp1[node.nodeId])
+				continue;
+			cout << "broadcast msg send to " << node.nodeId << endl;
+			int fd = createConnection(node.ip, node.port);
+			send(fd, msg.c_str(), msg.size(), 0);
+			mp1[node.nodeId] = 1;
+		}
+	}
+
+}
 vector<string> split(string s)
 {
 	istringstream ss(s);

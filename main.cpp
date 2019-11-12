@@ -54,6 +54,13 @@ int main()
 	string ip = getIP();
 	cout<<"IP Address Of Node :"<<ip<<endl<<endl;
 	
+	string temp;
+	cout<<"Enter Node Id :";
+	getline(cin,temp);
+
+	nodeId = temp;
+	//selfAdd.nodeId = temp;
+
 	//Create ID and Intialize Node Tables
 	createNode(ip, port);
 	cout<<"Node created with nodeId = "<<nodeId<<endl<<endl;
@@ -61,7 +68,7 @@ int main()
 	//creates Server On thread 
 	startServer();
 
-	//Client Function takes commands from user 
+	// //Client Function takes commands from user 
 	client();
 	
 	return 0;
