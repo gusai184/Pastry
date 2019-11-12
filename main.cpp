@@ -8,8 +8,8 @@ vector<vector<NodeAddress>> routeTable;
 unordered_map<string, string> hashTable;
 
 
-int L = pow(2,B); //leafSet Size
-int M = pow(2,B); //NeighbourSet Size
+int L = 4;//pow(2,B); //leafSet Size
+int M = 4;//pow(2,B); //NeighbourSet Size
 int ROW = ceil(log(N) / log(pow(2,B)));
 int COL = pow(2,B);
 int DIGITS = ROW;

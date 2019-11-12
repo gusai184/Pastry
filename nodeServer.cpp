@@ -481,7 +481,7 @@ void serverJoinHandler(vector<string> token)
 		//forward to temp
 		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
 
-		int fd = createConnection(token[2] ,stoi(token[3]));
+		int fd = createConnection(temp.ip ,temp.port);
 
 		send(fd ,msg.c_str() ,msg.size() ,0);
 
@@ -513,7 +513,7 @@ void serverJoinHandler(vector<string> token)
 		{
 			string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
 
-			int fd = createConnection(token[2] ,stoi(token[3]));
+			int fd = createConnection(temp.ip, temp.port);
 
 			send(fd ,msg.c_str() ,msg.size() ,0);
 
