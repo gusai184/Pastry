@@ -33,37 +33,50 @@ public:
 	int port;
 };
 
-
-void print();
-void printrouteTable();
-void printneighbourSet();
-void printleafSet();
-void createNode(string ip, int port);
-int index(char ch);
-
-
-//Server functions
-void * serverthread(void *args);
-void startServer();
+//leafset.cpp
 void sendLeafSet(vector<string> token);
+void recieveLeafSet(vector<string> token);
+void addToLeafSet(NodeAddress n);
+void printleafSet();
+NodeAddress getClosestLeafNode(string newnodeId);
+
+//neighbourset.cpp
 void sendNeighbourSet(vector<string> token);
 void receiveNeighbourSet(vector<string> token);
-void recieveLeafSet(vector<string> token);
 void addToNeighbourSet(NodeAddress newNeighbour);
-void addToLeafSet(NodeAddress n);
-int prefixMatch(string id1, string id2);
-void addToRouteTable(NodeAddress n);
-void receiveRoutingTable(vector<string> token);
-void sendRoutingTable(vector<string> token);
-int diff(string id1, string id2);
+void printneighbourSet();
 
+//routingTable.cpp
+void sendRoutingTable(vector<string> token);
+void receiveRoutingTable(vector<string> token);
+void addToRouteTable(NodeAddress n);
+void printrouteTable();
+
+//helperfunctions.cpp
+int prefixMatch(string id1, string id2);
+int diff(string id1, string id2);
+int index(char ch);
+int hax_dec(string s);
+bool compare(NodeAddress i1, NodeAddress i2);
+bool compare1(pair<double, NodeAddress> p1, pair<double, NodeAddress> p2);
+vector<string> split(string s);
+int createConnection(string ip ,int port);
+void print();
+
+//proximity
+double getProximity(string ip, int port);
 
 //client functions
 void joinHandler(vector<string> command);
 void client();
-vector<string> split(string s);
-int createConnection(string ip ,int port);
-void broadCast();
 
-//proximity
-double getProximity(string ip, int port);
+//Server functions
+void * serverthread(void *args);
+void startServer();
+void serverJoinHandler(vector<string> token);
+
+//node.cpp
+void createNode(string ip, int port);
+NodeAddress getClosestNode(string newnodeId);
+void updateStateTables(vector<string> token);
+void broadCast();

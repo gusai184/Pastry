@@ -1,7 +1,7 @@
 all:pastry
 
-pastry: main.o nodeServer.o nodeClient.o proximity.o
-	g++  main.o nodeServer.o nodeClient.o proximity.o -o pastry -lpthread
+pastry: main.o nodeServer.o nodeClient.o proximity.o leafSet.o neighbourSet.o routingTable.o node.o helperFunctions.o
+	g++  main.o nodeServer.o nodeClient.o proximity.o leafSet.o neighbourSet.o node.o routingTable.o helperFunctions.o -o pastry -lpthread
 
 main.o:main.cpp 
 	g++ -c main.cpp
@@ -15,5 +15,20 @@ nodeClient.o:nodeClient.cpp
 proximity.o:proximity.cpp
 	g++ -c proximity.cpp
 
+leafSet.o:leafSet.cpp
+	g++ -c leafSet.cpp
+
+neighbourSet.o:neighbourSet.cpp
+	g++ -c neighbourSet.cpp
+
+routingTable.o:routingTable.cpp
+	g++ -c routingTable.cpp
+
+node.o:node.cpp
+	g++ -c node.cpp
+
+helperFunctions.o:helperFunctions.cpp
+	g++ -c helperFunctions.cpp
+
 r:
-	rm main.o nodeServer.o nodeClient.o proximity.o
+	rm main.o nodeServer.o nodeClient.o proximity.o leafSet.o neighbourSet.o routingTable.o node.o helperFunctions.o
