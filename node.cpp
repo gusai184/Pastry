@@ -51,6 +51,7 @@ NodeAddress getClosestNode(string newnodeId)
 {
 	int max_prefix_match = prefixMatch(nodeId, newnodeId);
 	int min_diff = diff(nodeId, newnodeId);
+	
 	NodeAddress clostestNode = selfAdd;
 
 	//check in leaf Node

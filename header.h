@@ -17,6 +17,7 @@
 #include <ifaddrs.h>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 
 #define BUFFER_SIZE 256
 #define N 65536 // Total Number of node in Network
@@ -67,16 +68,25 @@ void print();
 double getProximity(string ip, int port);
 
 //client functions
-void joinHandler(vector<string> command);
+void join(vector<string> command);
 void client();
+void setKey(vector<string> command);
+void getKey(vector<string> command);
 
 //Server functions
 void * serverthread(void *args);
 void startServer();
-void serverJoinHandler(vector<string> token);
+void joinHandler(vector<string> token);
+void setKeyHandler(vector<string> token);
+void getKeyHandler(vector<string> token);
+void printhashTable();
+void getAck(vector<string> token);
 
 //node.cpp
 void createNode(string ip, int port);
 NodeAddress getClosestNode(string newnodeId);
 void updateStateTables(vector<string> token);
 void broadCast();
+
+//md5
+std::string md5(const std::string str);

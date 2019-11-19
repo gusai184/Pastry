@@ -33,16 +33,7 @@ int prefixMatch(string id1, string id2)
 
 int diff(string id1, string id2)
 {
-	int value1, value2;
-	stringstream str;
-	
-	str << id1;
-	str >> std::hex >> value1;
-
-	str << id2;
-	str >> std::hex >> value2;
-
-	return abs(value1 - value2);
+	return abs(hax_dec(id1) - hax_dec(id2));
 }
 
 

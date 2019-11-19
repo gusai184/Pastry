@@ -16,31 +16,36 @@ int DIGITS = ROW;
 
 string getIP()
 {
-	struct ifaddrs * ifAddrStruct=NULL;
-    struct ifaddrs * ifa=NULL;
-    void * tmpAddrPtr=NULL;
-	  string ret;
+	string line;
+	ifstream IPFile;
+	int offset;
+	vector<string> ip;        
+	system("ifconfig > ip.txt");
 
-    getifaddrs(&ifAddrStruct);
-
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-        if (!ifa->ifa_addr)
-            continue;
-        if (ifa->ifa_addr->sa_family == AF_INET)
-        { // IP4
-            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-            char addressBuffer[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-      		if(ifa->ifa_name[0] == 'w')
-            {
-  				ret = string(addressBuffer);
-  				if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
-  				return ret;
-      			}
-        }
-    }
-    return ret;
+	IPFile.open ("ip.txt");
+	if(IPFile.is_open())
+	{
+	    while(getline(IPFile, line))
+	    {
+		    string temp;
+		    stringstream ss(line);
+		    ss >> temp;
+		    if(temp == "inet")
+		    {
+		    	ss >> temp;
+		    	ip.push_back(temp);
+		    }
+	    }
+	    system("rm ip.txt");
+	    for(int i = 0; i < ip.size(); i++)
+    		if(ip[i] != "127.0.0.1")
+    			return ip[i];
+  
+  		return ip[0];
+	}
+	
 }
+
 
 int main()
 {
@@ -52,6 +57,7 @@ int main()
 	
 	//Gets IP of the machine in string
 	string ip = getIP();
+	
 	cout<<"IP Address Of Node :"<<ip<<endl<<endl;
 	
 	string temp;

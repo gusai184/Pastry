@@ -31,4 +31,4 @@ helperFunctions.o:helperFunctions.cpp
 	g++ -c helperFunctions.cpp
 
 r:
-	rm main.o nodeServer.o nodeClient.o proximity.o leafSet.o neighbourSet.o routingTable.o node.o helperFunctions.o
+	rm main.o nodeServer.o nodeClient.o proximity.o leafSet.o neighbourSet.o routingTable.o node.o helperFunctions.o	
