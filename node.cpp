@@ -112,11 +112,12 @@ void updateStateTables(vector<string> token)
 		addToNeighbourSet(temp);
 	}	
 }
+
 void broadCast()
 {
 	cout<<"Broadcast FUnction"<<endl;
 	unordered_map <string, int> mp;
-	string msg = "broadcast ";
+	string msg = "broadcast " + selfAdd.nodeId + " "+selfAdd.ip + " " + to_string(selfAdd.port) + " ";
 	for(auto node : leafSet)
 	{
 		if(node.nodeId == "empt")

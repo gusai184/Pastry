@@ -162,5 +162,7 @@ void print()
 	cout<<endl;
 	printrouteTable();
 	cout<<endl;
+	printhashTable();
+	cout<<endl;
 }
 

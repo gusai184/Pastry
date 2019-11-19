@@ -13,8 +13,6 @@ extern int ROW;
 extern int COL;
 extern int DIGITS;
 
-
-
 void client()
 {
 	cout<<"Node Client Started :"<<endl;
@@ -93,9 +91,7 @@ void join(vector<string> command)
 	} 
 
 	cout<<"Connection Establishd"<<endl;
-	
 	string cmd = "join 0 " +selfAdd.ip + " " + to_string(selfAdd.port) + " " + selfAdd.nodeId;
-	
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 
 }

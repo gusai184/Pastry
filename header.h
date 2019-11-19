@@ -53,6 +53,13 @@ void receiveRoutingTable(vector<string> token);
 void addToRouteTable(NodeAddress n);
 void printrouteTable();
 
+//hashTable.cpp
+void redistributeHashTable(vector<string> token);
+void addToHashTable(vector<string> token);
+void setKeyHandler(vector<string> token);
+void getKeyHandler(vector<string> token);
+void printhashTable();
+
 //helperfunctions.cpp
 int prefixMatch(string id1, string id2);
 int diff(string id1, string id2);
@@ -77,10 +84,9 @@ void getKey(vector<string> command);
 void * serverthread(void *args);
 void startServer();
 void joinHandler(vector<string> token);
-void setKeyHandler(vector<string> token);
-void getKeyHandler(vector<string> token);
-void printhashTable();
 void getAck(vector<string> token);
+
+
 
 //node.cpp
 void createNode(string ip, int port);

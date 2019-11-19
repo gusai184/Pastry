@@ -166,11 +166,21 @@ void * serverthread(void *args)
         else if(token[0] == "broadcast")
         {
         	updateStateTables(token);
+        	//Redistributet hash table
+        	redistributeHashTable(token);
         	print();
-        }     
+        	
+        }
+        else if(token[0] == "addkeyvalue")     
+        {
+        	addToHashTable(token);
+        	printhashTable();
+        }
    }
 
 }
+
+
 
 void startServer()
 {
@@ -188,124 +198,5 @@ void getAck(vector<string> token)
 	cout<<endl<<"# ";
 }
 
-void setKeyHandler(vector<string> token)
-{
-	
-	string keyhash = token[3];
-	NodeAddress temp =  getClosestLeafNode(keyhash);
-
-	if( temp.nodeId != selfAdd.nodeId)
-	{
-		//forward to temp
-		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-		int fd = createConnection(temp.ip ,temp.port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 1 from leafset"<<endl;
-		return ;
-	}
-
-	int l = prefixMatch(nodeId ,keyhash);
-	int j = index(keyhash[l]);
-
-	if( routeTable[l][j].nodeId != "empt")
-	{
-		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-		int fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 2 from routing table"<<endl;
-	}
-	else
-	{
-		temp = getClosestNode(keyhash);
-
-		cout<<"Temp = "<<temp.nodeId<<endl;
-		if( temp.nodeId != selfAdd.nodeId )
-		{
-			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-			int fd = createConnection(temp.ip, temp.port);
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			cout<<"forward Msg Sent 3 from rear conditon"<<endl;
-		}
-		else
-		{
-			cout<<"I am closest Node add key here ...."<<endl;
-			string key = token[1];
-			string value = token[2];
-			hashTable[key] = value;
-
-			int fd = createConnection(token[4], stoi(token[5]));
-			string msg = "msg_ack Successfully added to node " + nodeId;
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			printhashTable();
-		}
-	}
-}
-
-void getKeyHandler(vector<string> token)
-{
-	string keyhash = token[2];
-	NodeAddress temp =  getClosestLeafNode(keyhash);
-
-	if( temp.nodeId != selfAdd.nodeId)
-	{
-		//forward to temp
-		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-		int fd = createConnection(temp.ip ,temp.port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 1 from leafset"<<endl;
-		return ;
-	}
-
-	int l = prefixMatch(nodeId ,keyhash);
-	int j = index(keyhash[l]);
-
-	if( routeTable[l][j].nodeId != "empt")
-	{
-
-		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-		int fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 2 from routing table"<<endl;
-	}
-	else
-	{
-		temp = getClosestNode(keyhash);
-
-	
-		if( temp.nodeId != selfAdd.nodeId )
-		{
-			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-			int fd = createConnection(temp.ip, temp.port);
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			cout<<"forward Msg Sent 3 from rear conditon"<<endl;
-		}
-		else
-		{
-			cout<<"I have a key ...."<<endl;
-			string key = token[1];
-
-			string value;
-
-			if(hashTable.find(key) != hashTable.end())
-				value = hashTable[key];
-			else
-				value = "Key not found ";
-
-			int fd = createConnection(token[3], stoi(token[4]));
-			string msg = "msg_ack " + value;
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			printhashTable();
-		}
-	}	
-}
 
 
-
-void printhashTable()
-{
-	cout<<"-------------------HashTable Table---------------------"<<endl;
-	for(auto pair : hashTable)
-	{
-		cout<<pair.first <<" : "<<pair.second<<endl;
-	}
-}
