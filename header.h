@@ -85,6 +85,7 @@ void * serverthread(void *args);
 void startServer();
 void joinHandler(vector<string> token);
 void getAck(vector<string> token);
+void * clientRequestThread(void * fd);
 
 
 

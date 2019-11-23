@@ -166,7 +166,7 @@ void getKeyHandler(vector<string> token)
 				value = "Key not found ";
 
 			int fd = createConnection(token[3], stoi(token[4]));
-			string msg = "msg_ack " + value;
+			string msg = "msg_ack " + value + " " + nodeId;
 			send(fd ,msg.c_str() ,msg.size() ,0);
 			printhashTable();
 		}

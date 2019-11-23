@@ -88,6 +88,61 @@ void joinHandler(vector<string> token)
 
 }
 
+void * clientRequestThread(void * fd)
+{
+	int client_fd = *(int *) fd;
+	char cmd[BUFFER_SIZE];
+  	bzero(cmd,BUFFER_SIZE);
+    int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
+    cout<<"Got message "<<cmd<<endl;
+    vector<string> token = split(string(cmd));
+
+    if( token[0] == "join")
+    {
+    	joinHandler(token);
+    }
+    else if( token[0] == "set")
+    {
+    	setKeyHandler(token);
+    }
+    else if( token[0] == "get")
+    {
+    	getKeyHandler(token);	
+    }
+    else if( token[0] == "msg_ack")
+    {
+    	getAck(token);
+    }
+    else if( token[0] == "neighbourSet")
+    {
+    	receiveNeighbourSet(token);
+    	printneighbourSet();
+    }
+    else if(token[0] == "leafSet")
+    {
+    	recieveLeafSet(token);
+    	printleafSet();
+    	broadCast();
+    }
+    else if(token[0] == "routingTable")
+    {
+    	receiveRoutingTable(token);
+    	printrouteTable();
+    }
+    else if(token[0] == "broadcast")
+    {
+    	updateStateTables(token);
+    	//Redistributet hash table
+    	redistributeHashTable(token);
+    	print();
+    	
+    }
+    else if(token[0] == "addkeyvalue")     
+    {
+    	addToHashTable(token);
+    	printhashTable();
+    }
+}
 
 void * serverthread(void *args)
 {
@@ -117,65 +172,16 @@ void * serverthread(void *args)
    
    while(1)
    {
-       int client_fd;
-       client_fd = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
+       int *client_fd = (int *) malloc(sizeof(int));
+       *client_fd = accept(listener_fd, (struct sockaddr *)&peer_address,(socklen_t *)&peerlen);
 
         if (client_fd < 0) {
-        	perror("ERROR on acceptingg peer request");
+        	perror("ERROR on accepting peer request");
         	continue;
       	}
       
-      	char cmd[BUFFER_SIZE];
-      	bzero(cmd,BUFFER_SIZE);
-	    int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
-        cout<<"Got message "<<cmd<<endl;
-        vector<string> token = split(string(cmd));
-
-        if( token[0] == "join")
-        {
-        	joinHandler(token);
-        }
-        else if( token[0] == "set")
-        {
-        	setKeyHandler(token);
-        }
-        else if( token[0] == "get")
-        {
-        	getKeyHandler(token);	
-        }
-        else if( token[0] == "msg_ack")
-        {
-        	getAck(token);
-        }
-        else if( token[0] == "neighbourSet")
-        {
-        	receiveNeighbourSet(token);
-        	printneighbourSet();
-        }
-        else if(token[0] == "leafSet")
-        {
-        	recieveLeafSet(token);
-        	printleafSet();
-        	broadCast();
-        }
-        else if(token[0] == "routingTable")
-        {
-        	receiveRoutingTable(token);
-        	printrouteTable();
-        }
-        else if(token[0] == "broadcast")
-        {
-        	updateStateTables(token);
-        	//Redistributet hash table
-        	redistributeHashTable(token);
-        	print();
-        	
-        }
-        else if(token[0] == "addkeyvalue")     
-        {
-        	addToHashTable(token);
-        	printhashTable();
-        }
+      	pthread_t *client_handler = (pthread_t *) malloc(sizeof(pthread_t));
+		pthread_create(client_handler, NULL, clientRequestThread, client_fd);
    }
 
 }
