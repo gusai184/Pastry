@@ -75,3 +75,46 @@ void printneighbourSet()
 		if(neighbourSet[i].second.nodeId!="empt")
 			cout<<neighbourSet[i].second.nodeId<<":"<<neighbourSet[i].first << endl;
 }
+
+void * neighbourThread(void * args)
+{
+	while(1)
+	{
+		sleep(20);
+
+		cout<<"Periodic Updation Started"<<endl;
+		f(i,0,M)
+		{
+			NodeAddress node = neighbourSet[i].second;
+
+			if( node.nodeId != "empt" && isNodeActive(node)==false)
+			{
+				neighbourSet[i].second.nodeId = "empt";
+				neighbourSet[i].first = 9999.0;	
+			}
+		}
+
+		sort(neighbourSet.begin(), neighbourSet.end(), compare1);
+
+		f(i,0,M)
+		{
+			NodeAddress node = neighbourSet[i].second;
+
+			if( node.nodeId != "empt")
+			{
+				string msg = "getneighbourset "+ nodeId+" "+selfAdd.ip+" "+to_string(selfAdd.port);
+
+				int fd = createConnection(node.ip ,node.port);
+				send(fd ,msg.c_str() ,msg.size() ,0);
+				close(fd);
+			}
+		}
+	}
+}
+
+void repairneighbourSet()
+{
+   pthread_t thread_id; 
+   pthread_create(&thread_id, NULL, neighbourThread, (void *)NULL); 
+}
+

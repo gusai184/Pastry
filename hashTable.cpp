@@ -72,46 +72,72 @@ void setKeyHandler(vector<string> token)
 	{
 		//forward to temp
 		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-		int fd = createConnection(temp.ip ,temp.port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 1 from leafset"<<endl;
-		return ;
+		
+		if( isNodeActive(temp) == false )
+		{
+			//Repair algorithm
+	        cout<<"Repair leafSet algorithm Running for "<<temp.nodeId<<endl;
+	        repairLeafSet(temp);
+	        printleafSet();
+	        temp =  getClosestLeafNode(keyhash);
+		}
+		if(temp.nodeId != selfAdd.nodeId )
+		{
+			int fd = createConnection(temp.ip, temp.port);
+			send(fd ,msg.c_str() ,msg.size() ,0);
+			cout<<"forward key query Msg Sent 1 "<<temp.port<<endl;
+			return ;
+		}
 	}
+
+	cout<<endl<<"Routing Set key checking starts here ..."<<endl;
 
 	int l = prefixMatch(nodeId ,keyhash);
 	int j = index(keyhash[l]);
 
+	int fd = -1;
 	if( routeTable[l][j].nodeId != "empt")
 	{
+		if(isNodeActive(routeTable[l][j]) == false)
+    	{
+	      // repair route table algorithm
+	      cout << "repair routetable algorithm" << endl;
+	      repairRouteTable(l, j);
+	      if( routeTable[l][j].nodeId != "empt")
+	      	fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+	      printrouteTable();
+	    }  
+	    if( fd != -1)
+	    {
+			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
+			send(fd ,msg.c_str() ,msg.size() ,0);
+			cout<<"forward Msg Sent 2 (from Set key)from routing table"<<routeTable[l][j].port<<endl;
+			return ;
+		}
+	}
+
+	cout<<endl<<"Rare condition Set Key starts here ..."<<endl;
+	temp = getClosestNode(keyhash);
+
+	cout<<"Temp = "<<temp.nodeId<<endl;
+	if( temp.nodeId != selfAdd.nodeId && isNodeActive(temp))
+	{
 		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-		int fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+		int fd = createConnection(temp.ip, temp.port);
 		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 2 from routing table"<<endl;
+		cout<<"forward Msg Sent 3 (from Set key)from rare conditon "<<temp.port<<endl;
 	}
 	else
 	{
-		temp = getClosestNode(keyhash);
+		cout<<"I am closest Node add key here ...."<<endl;
+		string key = token[1];
+		string value = token[2];
+		hashTable[key] = value;
 
-		cout<<"Temp = "<<temp.nodeId<<endl;
-		if( temp.nodeId != selfAdd.nodeId )
-		{
-			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
-			int fd = createConnection(temp.ip, temp.port);
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			cout<<"forward Msg Sent 3 from rear conditon"<<endl;
-		}
-		else
-		{
-			cout<<"I am closest Node add key here ...."<<endl;
-			string key = token[1];
-			string value = token[2];
-			hashTable[key] = value;
-
-			int fd = createConnection(token[4], stoi(token[5]));
-			string msg = "msg_ack key successfully added to node " + nodeId;
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			printhashTable();
-		}
+		int fd = createConnection(token[4], stoi(token[5]));
+		string msg = "msg_ack key successfully added to node " + nodeId;
+		send(fd ,msg.c_str() ,msg.size() ,0);
+		printhashTable();
 	}
 }
 
@@ -124,53 +150,80 @@ void getKeyHandler(vector<string> token)
 	{
 		//forward to temp
 		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-		int fd = createConnection(temp.ip ,temp.port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 1 from leafset"<<endl;
-		return ;
+		
+		if( isNodeActive(temp) == false )
+		{
+			//Repair algorithm
+	        cout<<"Repair leafSet algorithm Running for "<<temp.nodeId<<endl;
+	        repairLeafSet(temp);
+	        printleafSet();
+	        temp =  getClosestLeafNode(keyhash);
+		}
+		if(temp.nodeId != selfAdd.nodeId )
+		{
+			int fd = createConnection(temp.ip, temp.port);
+			send(fd ,msg.c_str() ,msg.size() ,0);
+			cout<<"forward get query Msg Sent 1 "<<temp.port<<endl;
+			return ;
+		}
 	}
 
 	int l = prefixMatch(nodeId ,keyhash);
 	int j = index(keyhash[l]);
 
+	cout<<endl<<"Routing Get key checking starts here ..."<<endl;
+
+
+	int fd = -1;
 	if( routeTable[l][j].nodeId != "empt")
 	{
-
+		if(isNodeActive(routeTable[l][j]) == false)
+    	{
+	      // repair route table algorithm
+	      cout << "Repair routetable algorithm" << endl;
+	      repairRouteTable(l, j);
+	      if( routeTable[l][j].nodeId != "empt")
+	      	fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+	      printrouteTable();
+	    }  
+	    if( fd != -1)
+	    {
+			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] ;
+			send(fd ,msg.c_str() ,msg.size() ,0);
+			cout<<"forward Msg Sent 2 (from Get key) from routing table "<<routeTable[l][j].port<<endl;
+			return ;
+		}
+	}
+	
+	cout<<endl<<"Rare condition Get Key starts here ..."<<endl;
+	temp = getClosestNode(keyhash);	
+	cout<<"after getClosestNode "<<temp.nodeId<<endl;
+	if( temp.nodeId != selfAdd.nodeId && isNodeActive(temp))
+	{
+		cout<<"isNodeActive"<<endl;
 		string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-		int fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+		int fd = createConnection(temp.ip, temp.port);
 		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 2 from routing table"<<endl;
+		cout<<"forward Msg 3 sent (from Get key) from rear conditon "<<temp.port<<endl;
 	}
 	else
 	{
-		temp = getClosestNode(keyhash);
+		cout<<"I have a key ...."<<endl;
+		string key = token[1];
 
-	
-		if( temp.nodeId != selfAdd.nodeId )
-		{
-			string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4];
-			int fd = createConnection(temp.ip, temp.port);
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			cout<<"forward Msg Sent 3 from rear conditon"<<endl;
-		}
+		string value;
+
+		if(hashTable.find(key) != hashTable.end())
+			value = hashTable[key];
 		else
-		{
-			cout<<"I have a key ...."<<endl;
-			string key = token[1];
+			value = "Key not found "+ nodeId;
 
-			string value;
-
-			if(hashTable.find(key) != hashTable.end())
-				value = hashTable[key];
-			else
-				value = "Key not found ";
-
-			int fd = createConnection(token[3], stoi(token[4]));
-			string msg = "msg_ack " + value + " " + nodeId;
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			printhashTable();
-		}
-	}	
+		int fd = createConnection(token[3], stoi(token[4]));
+		string msg = "msg_ack " + value + " " + nodeId;
+		send(fd ,msg.c_str() ,msg.size() ,0);
+		printhashTable();
+	}
+		
 }
 
 
@@ -181,4 +234,4 @@ void printhashTable()
 	{
 		cout<<pair.first <<" : "<<pair.second<<endl;
 	}
-}
+} 

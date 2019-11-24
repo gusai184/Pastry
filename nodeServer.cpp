@@ -73,8 +73,9 @@ void joinHandler(vector<string> token)
       repairRouteTable(l, j);
       if( routeTable[l][j].nodeId != "empt")
         fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+      printrouteTable();
     }
-    printrouteTable();
+    
 
     if(fd != -1)
     {
@@ -190,6 +191,10 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "getRTentry")
     {
       sendRTentry(token);
+    }
+    else if(token[0] == "getneighbourset")
+    {
+      sendNeighbourSet(token);
     }
 }
 

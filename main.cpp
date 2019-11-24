@@ -74,6 +74,9 @@ int main()
 	//creates Server On thread 
 	startServer();
 
+	//Periodically Updates Neighbour set
+	repairneighbourSet();
+	
 	// //Client Function takes commands from user 
 	client();
 	

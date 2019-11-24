@@ -109,6 +109,9 @@ void sendRTentry(vector<string> token)
 {
 	int i = stoi(token[1]);
 	int j = stoi(token[2]);
+
+	if( routeTable[i][j].nodeId == "empt")
+		return;
 	string msg = "routingTable " + routeTable[i][j].nodeId + " " + routeTable[i][j].ip + " " + to_string(routeTable[i][j].port);
 	int fd = createConnection(token[3], stoi(token[4]));
 	send(fd, msg.c_str(), msg.size(), 0);

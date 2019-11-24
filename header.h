@@ -48,6 +48,8 @@ void sendNeighbourSet(vector<string> token);
 void receiveNeighbourSet(vector<string> token);
 void addToNeighbourSet(NodeAddress newNeighbour);
 void printneighbourSet();
+void repairneighbourSet();
+void * neighbourThread(void * args);
 
 //routingTable.cpp
 void sendRoutingTable(vector<string> token);
