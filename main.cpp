@@ -62,8 +62,8 @@ int main()
 	
 	string temp;
 	cout<<"Enter Node Id :";
-	getline(cin,temp);
-
+	//getline(cin,temp);
+	temp = p;
 	nodeId = temp;
 	//selfAdd.nodeId = temp;
 

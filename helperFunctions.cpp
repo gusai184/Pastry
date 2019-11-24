@@ -146,8 +146,7 @@ int createConnection(string ip ,int port)
     listener_address.sin_port = htons(listener_port);
    
     if (connect(server_fd, (struct sockaddr*)&listener_address, sizeof(listener_address)) < 0) {
-        cout<<"error no is "<<errno<<endl;
-        perror("ERROR connecting");
+        cout<<"ERROR connecting "<<ip<<" "<<to_string(port)<<endl;
         return -1;
     }
 

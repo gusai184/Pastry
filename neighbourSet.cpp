@@ -17,6 +17,14 @@ void addToNeighbourSet(NodeAddress newNeighbour)
 	if(newNeighbour.nodeId == nodeId)
 		return;
 
+	int fd = createConnection(newNeighbour.ip, newNeighbour.port);
+	if(fd == -1)
+	{
+		//node is not active
+		return;
+	}
+	close(fd);
+
 	f(i,0,M)
 		if(newNeighbour.nodeId == neighbourSet[i].second.nodeId)
 			return;

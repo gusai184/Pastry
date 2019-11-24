@@ -18,6 +18,14 @@ void addToRouteTable(NodeAddress n)
 	if(n.nodeId == nodeId)
 		return;
 
+	int fd = createConnection(n.ip, n.port);
+	if(fd == -1)
+	{
+		//node is not active
+		return;
+	}
+	close(fd);
+
 	int pm = prefixMatch(n.nodeId, nodeId);
 	int in = index(n.nodeId[pm]);
 	if(routeTable[pm][in].nodeId == "empt")
@@ -69,6 +77,43 @@ void receiveRoutingTable(vector<string> token)
 	}
 }
 
+void repairRouteTable(int row, int col)
+{
+	routeTable[row][col].nodeId = "empt";
+
+	f(i, row, row+2)
+	{
+		f(j, 0, COL)
+		{
+			if(j == col)
+				continue;
+
+			if(routeTable[i][j].nodeId == "empt" || routeTable[i][j].nodeId == nodeId)
+				continue;
+
+			if(!isNodeActive(routeTable[i][j]))
+			{
+				routeTable[i][j].nodeId = "empt";
+				continue;
+			}
+			
+			string msg = "getRTentry " + to_string(row) + " " + to_string(col) + " " + selfAdd.ip + " " + to_string(selfAdd.port);
+			int fd = createConnection(routeTable[i][j].ip, routeTable[i][j].port);
+			send(fd, msg.c_str(), msg.size(), 0);
+			close(fd);
+		}
+	}
+}
+
+void sendRTentry(vector<string> token)
+{
+	int i = stoi(token[1]);
+	int j = stoi(token[2]);
+	string msg = "routingTable " + routeTable[i][j].nodeId + " " + routeTable[i][j].ip + " " + to_string(routeTable[i][j].port);
+	int fd = createConnection(token[3], stoi(token[4]));
+	send(fd, msg.c_str(), msg.size(), 0);
+	close(fd);
+}
 
 void printrouteTable()
 {

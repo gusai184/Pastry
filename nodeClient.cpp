@@ -90,8 +90,6 @@ void join(vector<string> command)
 		return ;
 	} 
 
-	cout<<"Connection Establishd"<<endl;
 	string cmd = "join 0 " +selfAdd.ip + " " + to_string(selfAdd.port) + " " + selfAdd.nodeId;
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
-
 }

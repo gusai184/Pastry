@@ -113,6 +113,20 @@ void updateStateTables(vector<string> token)
 	}	
 }
 
+bool isNodeActive(NodeAddress node)
+{
+  int fd = createConnection(node.ip, node.port);
+  if(fd == -1)
+  {
+    return false;
+  }
+  else
+  {
+    close(fd);
+    return true;
+  }
+}
+
 void broadCast()
 {
 	cout<<"Broadcast FUnction"<<endl;

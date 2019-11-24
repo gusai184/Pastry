@@ -23,6 +23,7 @@
 #define N 65536 // Total Number of node in Network
 #define B 4
 #define f(i,a,b) for(int i=(int)a; i<(int)b; i++)
+#define rf(i,a,b) for(int i=(int)a;i>=(int)b;i--)
 
 using namespace std;
 
@@ -39,6 +40,7 @@ void sendLeafSet(vector<string> token);
 void recieveLeafSet(vector<string> token);
 void addToLeafSet(NodeAddress n);
 void printleafSet();
+void repairLeafSet(NodeAddress failednode);
 NodeAddress getClosestLeafNode(string newnodeId);
 
 //neighbourset.cpp
@@ -52,6 +54,8 @@ void sendRoutingTable(vector<string> token);
 void receiveRoutingTable(vector<string> token);
 void addToRouteTable(NodeAddress n);
 void printrouteTable();
+void repairRouteTable(int row, int col);
+void sendRTentry(vector<string> token);
 
 //hashTable.cpp
 void redistributeHashTable(vector<string> token);
@@ -94,6 +98,7 @@ void createNode(string ip, int port);
 NodeAddress getClosestNode(string newnodeId);
 void updateStateTables(vector<string> token);
 void broadCast();
+bool isNodeActive(NodeAddress node);
 
 //md5
 std::string md5(const std::string str);

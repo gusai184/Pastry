@@ -15,8 +15,6 @@ extern int COL;
 extern int DIGITS;
 
 
-
-
 void joinHandler(vector<string> token)
 {
 	string newNodeId = token[4];
@@ -26,64 +24,96 @@ void joinHandler(vector<string> token)
 	if( token[1] == "0")
 	{
 		//first node
-		cout<<endl<<"Neighbour set send"<<endl;
 		sendNeighbourSet(token);
 	}
 
 	cout<<endl<<"Routing Table Send"<<endl;
 	sendRoutingTable(token);
 
+  int flag = 1, fd;
+  NodeAddress temp;
+
+  cout<<"Checking Leaf set"<<endl;
 	//check in leafset for closest node
-	NodeAddress temp =  getClosestLeafNode(newNodeId);
+	temp =  getClosestLeafNode(newNodeId);
 
 	if( temp.nodeId != selfAdd.nodeId)
 	{
 		//forward to temp
 		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
-		int fd = createConnection(temp.ip ,temp.port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 1"<<endl;
-
-		return ;
+		
+    if(isNodeActive(temp) == false)
+    {
+        //Repair algorithm
+        cout<<"Repair leafSet algorithm Running for "<<temp.nodeId<<endl;
+        repairLeafSet(temp);
+        printleafSet();
+        temp =  getClosestLeafNode(newNodeId);
+    }
+    if(temp.nodeId != selfAdd.nodeId)
+    {
+      int fd = createConnection(temp.ip, temp.port);
+      send(fd ,msg.c_str() ,msg.size() ,0);
+      cout<<"forward Msg Sent 1 "<<temp.port<<endl;
+      return;
+    }
 	}
 
+  cout<<endl<<"Routing checking starts here ..."<<endl;
 	int j = index(newNodeId[l]);
-
+  fd = -1;
 	if( routeTable[l][j].nodeId != "empt")
 	{
 		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
-		int fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
-		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 2"<<endl;
-	}
-	else // Rare Condition
-	{
-		temp = getClosestNode(newNodeId);
-
-		cout<<"Temp = "<<temp.nodeId<<endl;
-		if( temp.nodeId != selfAdd.nodeId )
-		{
-			string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
-			int fd = createConnection(temp.ip, temp.port);
-			send(fd ,msg.c_str() ,msg.size() ,0);
-			cout<<"forward Msg Sent 3"<<endl;
-		}
-		else
-		{
-			cout<<"I am closest in Rear conditon"<<endl;
-
-			NodeAddress newNode;
-
-			newNode.nodeId = newNodeId;
-			newNode.ip = token[2];
-			newNode.port = stoi(token[3]);
 		
-			routeTable[l][j] = newNode; 
+    if(isNodeActive(routeTable[l][j]) == false)
+    {
+      // repair route table algorithm
+      cout << "repair routetable algorithm" << endl;
+      repairRouteTable(l, j);
+      if( routeTable[l][j].nodeId != "empt")
+        fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+    }
+    printrouteTable();
 
-			sendLeafSet(token);
+    if(fd != -1)
+    {
+      send(fd ,msg.c_str() ,msg.size() ,0);
+      cout<<"forward Msg Sent 2 "<<routeTable[l][j].port<<endl;
+      return;
+    }
+	}
 
-			cout<<"Leaf Set Send"<<endl;
-		}
+  cout<<endl<<"Rare condition starts here ..."<<endl;
+  //rare condition
+	temp = getClosestNode(newNodeId);
+
+	if( temp.nodeId != selfAdd.nodeId && isNodeActive(temp) )
+	{
+		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
+		int fd = createConnection(temp.ip, temp.port);
+		send(fd ,msg.c_str() ,msg.size() ,0);
+		cout<<"forward Msg Sent 3 "<<temp.port<<endl;
+	}
+	else
+	{
+		cout<<"I am closest in Rear conditon"<<endl;
+
+		NodeAddress newNode;
+
+		newNode.nodeId = newNodeId;
+		newNode.ip = token[2];
+		newNode.port = stoi(token[3]);
+	
+		routeTable[l][j] = newNode; 
+
+		sendLeafSet(token);
+
+    string msg = "msg_ack join successfully to system.";
+    int fd = createConnection(newNode.ip ,newNode.port);
+    send(fd ,msg.c_str() ,msg.size() ,0);
+
+		cout<<"Leaf Set Send"<<endl;
 	}
 
 }
@@ -94,7 +124,13 @@ void * clientRequestThread(void * fd)
 	char cmd[BUFFER_SIZE];
   	bzero(cmd,BUFFER_SIZE);
     int n = recv(client_fd ,cmd ,BUFFER_SIZE ,0);
-    cout<<"Got message "<<cmd<<endl;
+
+    if(n==0 || cmd=="")
+    {
+      return NULL;
+    }
+
+    cout<<"==> Got message "<<cmd<<endl;
     vector<string> token = split(string(cmd));
 
     if( token[0] == "join")
@@ -111,7 +147,13 @@ void * clientRequestThread(void * fd)
     }
     else if( token[0] == "msg_ack")
     {
-    	getAck(token);
+     	getAck(token);
+    }
+    else if( token[0] == "leafBroadcast")
+    {
+      recieveLeafSet(token);
+      printleafSet();
+      broadCast();
     }
     else if( token[0] == "neighbourSet")
     {
@@ -122,7 +164,10 @@ void * clientRequestThread(void * fd)
     {
     	recieveLeafSet(token);
     	printleafSet();
-    	broadCast();
+    }
+    else if(token[0] == "getleafSet")
+    {
+      sendLeafSet(token);
     }
     else if(token[0] == "routingTable")
     {
@@ -132,7 +177,7 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "broadcast")
     {
     	updateStateTables(token);
-    	//Redistributet hash table
+    	//Redistribute hash table
     	redistributeHashTable(token);
     	print();
     	
@@ -141,6 +186,10 @@ void * clientRequestThread(void * fd)
     {
     	addToHashTable(token);
     	printhashTable();
+    }
+    else if(token[0] == "getRTentry")
+    {
+      sendRTentry(token);
     }
 }
 
@@ -181,7 +230,8 @@ void * serverthread(void *args)
       	}
       
       	pthread_t *client_handler = (pthread_t *) malloc(sizeof(pthread_t));
-		pthread_create(client_handler, NULL, clientRequestThread, client_fd);
+		    pthread_create(client_handler, NULL, clientRequestThread, client_fd);
+        pthread_join(*client_handler, NULL);
    }
 
 }
@@ -202,6 +252,7 @@ void getAck(vector<string> token)
 	f(i,1,token.size())
 		cout<<token[i]<<" ";
 	cout<<endl<<"# ";
+
 }
 
 

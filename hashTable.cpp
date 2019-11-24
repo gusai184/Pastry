@@ -108,7 +108,7 @@ void setKeyHandler(vector<string> token)
 			hashTable[key] = value;
 
 			int fd = createConnection(token[4], stoi(token[5]));
-			string msg = "msg_ack Successfully added to node " + nodeId;
+			string msg = "msg_ack key successfully added to node " + nodeId;
 			send(fd ,msg.c_str() ,msg.size() ,0);
 			printhashTable();
 		}

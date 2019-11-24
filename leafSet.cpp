@@ -14,8 +14,17 @@ extern int DIGITS;
 
 void addToLeafSet(NodeAddress n)
 {
+
 	if( n.nodeId == selfAdd.nodeId )
 		return ;
+
+	int fd = createConnection(n.ip, n.port);
+	if(fd == -1)
+	{
+		//node is not active
+		return;
+	}
+	close(fd);
 
 	for(int i = 0; i < L; i++)
 		if( leafSet[i].nodeId == n.nodeId )
@@ -91,7 +100,14 @@ void addToLeafSet(NodeAddress n)
 
 void sendLeafSet(vector<string> token)
 {
-	string msg = "leafSet "+ selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
+	string msg;
+
+	if(token[0] == "join")
+		msg = "leafBroadcast ";
+	else
+		msg = "leafSet ";
+
+	msg+= selfAdd.nodeId + " " + selfAdd.ip + " " + to_string(selfAdd.port) + " ";
 
 	f(i,0,L)
 	{
@@ -134,6 +150,51 @@ NodeAddress getClosestLeafNode(string newnodeId)
 
 	return clostestNode;
 }
+
+void repairLeafSet(NodeAddress failednode)
+{
+	f(i,0,L)
+	{
+		if(!isNodeActive(leafSet[i]))
+			leafSet[i].nodeId = "empt";
+	}
+
+	NodeAddress node = selfAdd;
+	int fd;
+	if(failednode.nodeId < nodeId)
+	{
+		f(i,0,L/2)
+		{
+			if(leafSet[i].nodeId != "empt")
+			{
+				node = leafSet[i];
+				break;
+			}
+
+		}
+	}
+	else
+	{
+		rf(i,L-1,L/2)
+		{
+			if(leafSet[i].nodeId != "empt")
+			{
+				node = leafSet[i];
+				break;
+			}
+		}
+	}
+
+	if(node.nodeId == selfAdd.nodeId)
+	{
+		return;
+	}
+	
+	string msg = "getleafset dummytoken " + selfAdd.ip + " " + to_string(selfAdd.port);
+	send(fd, msg.c_str(), msg.length(), 0);
+
+}
+
 
 void printleafSet()
 {
