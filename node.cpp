@@ -69,7 +69,7 @@ NodeAddress getClosestNode(string newnodeId)
 	{
 		NodeAddress nbNode = neighbourNode.second;
 
-		if( nbNode.nodeId == "empt")
+		if( nbNode.nodeId == "empt" || isNodeActive(nbNode) == false )
 		{
 			continue;
 		}
