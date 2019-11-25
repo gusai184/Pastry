@@ -75,7 +75,7 @@ int main()
 	startServer();
 
 	//Periodically Updates Neighbour set
-	repairneighbourSet();
+	// repairneighbourSet();
 	
 	// //Client Function takes commands from user 
 	client();

@@ -226,6 +226,28 @@ void getKeyHandler(vector<string> token)
 		
 }
 
+void gracefulExit()
+{
+	for(auto pair:hashTable)
+	{
+		string key = pair.first;
+		string val = pair.second;
+
+		NodeAddress temp = getClosestLeafNodeForReplica(key);
+
+		if( isNodeActive(temp) == false)
+		{
+			repairLeafSet(temp);
+			temp = getClosestLeafNodeForReplica(key);
+		}
+
+		string msg = "addkeyvalue "+ key +" "+val; 
+		int fd = createConnection(temp.ip ,temp.port);
+		send(fd ,msg.c_str() ,msg.size() ,0);
+	}
+
+	exit(0);
+}
 
 void printhashTable()
 {

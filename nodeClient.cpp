@@ -41,6 +41,10 @@ void client()
 		{
 			getKey(command_splited);
 		}
+		else if( command_splited[0] == "exit" && command_splited.size() == 1)
+		{
+			gracefulExit();
+		}
 		else
 		{
 			cout<<"Invalid command"<<endl;

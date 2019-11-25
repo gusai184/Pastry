@@ -18,6 +18,7 @@
 #include <sstream>
 #include <algorithm>
 #include <fstream>
+#include <climits>
 
 #define BUFFER_SIZE 256
 #define N 65536 // Total Number of node in Network
@@ -42,6 +43,7 @@ void addToLeafSet(NodeAddress n);
 void printleafSet();
 void repairLeafSet(NodeAddress failednode);
 NodeAddress getClosestLeafNode(string newnodeId);
+NodeAddress getClosestLeafNodeForReplica(string key);
 
 //neighbourset.cpp
 void sendNeighbourSet(vector<string> token);
@@ -65,6 +67,7 @@ void addToHashTable(vector<string> token);
 void setKeyHandler(vector<string> token);
 void getKeyHandler(vector<string> token);
 void printhashTable();
+void gracefulExit();
 
 //helperfunctions.cpp
 int prefixMatch(string id1, string id2);
