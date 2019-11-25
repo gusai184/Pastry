@@ -24,6 +24,22 @@ void addToHashTable(vector<string> token)
 	}
 }
 
+void sendKeyReplica(string key, string val)
+{
+	NodeAddress temp = getClosestLeafNodeForReplica(key);
+
+	if( isNodeActive(temp) == false)
+	{
+		repairLeafSet(temp);
+		temp = getClosestLeafNodeForReplica(key);
+	}
+
+	string msg = "addkeyvalue "+ key +" "+val; 
+	int fd = createConnection(temp.ip ,temp.port);
+	send(fd ,msg.c_str() ,msg.size() ,0);
+	close(fd);	
+}
+
 void redistributeHashTable(vector<string> token)
 {
 	string newNodeId = token[1];
@@ -137,6 +153,7 @@ void setKeyHandler(vector<string> token)
 		int fd = createConnection(token[4], stoi(token[5]));
 		string msg = "msg_ack key successfully added to node " + nodeId;
 		send(fd ,msg.c_str() ,msg.size() ,0);
+		sendKeyReplica(key, value);
 		printhashTable();
 	}
 }

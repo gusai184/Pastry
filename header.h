@@ -68,6 +68,7 @@ void setKeyHandler(vector<string> token);
 void getKeyHandler(vector<string> token);
 void printhashTable();
 void gracefulExit();
+void sendKeyReplica(string key, string val);
 
 //helperfunctions.cpp
 int prefixMatch(string id1, string id2);
