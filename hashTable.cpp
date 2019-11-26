@@ -26,12 +26,17 @@ void addToHashTable(vector<string> token)
 
 void sendKeyReplica(string key, string val)
 {
-	NodeAddress temp = getClosestLeafNodeForReplica(key);
+	NodeAddress temp = getClosestLeafNodeForReplica(key,nodeId);
+
+	if(temp.nodeId == "empt")
+		return;
 
 	if( isNodeActive(temp) == false)
 	{
 		repairLeafSet(temp);
-		temp = getClosestLeafNodeForReplica(key);
+		temp = getClosestLeafNodeForReplica(key,nodeId);
+		if(temp.nodeId == "empt")
+			return;
 	}
 
 	string msg = "addkeyvalue "+ key +" "+val; 
@@ -273,17 +278,35 @@ void gracefulExit()
 		string key = pair.first;
 		string val = pair.second;
 
-		NodeAddress temp = getClosestLeafNodeForReplica(key);
+		NodeAddress temp = getClosestLeafNodeForReplica(key,nodeId);
+		
+		if(temp.nodeId == "empt")
+			break;
 
 		if( isNodeActive(temp) == false)
 		{
 			repairLeafSet(temp);
-			temp = getClosestLeafNodeForReplica(key);
+			temp = getClosestLeafNodeForReplica(key,nodeId);
+			if(temp.nodeId == "empt")
+				break;
 		}
-
+		cout<<"Replica of key "<<key<<" send to "<<temp.nodeId<<endl;
 		string msg = "addkeyvalue "+ key +" "+val; 
 		int fd = createConnection(temp.ip ,temp.port);
 		send(fd ,msg.c_str() ,msg.size() ,0);
+		close(fd);
+
+		temp = getClosestLeafNodeForReplica(key,temp.nodeId);
+
+		if(temp.nodeId != "empt")
+		{
+			//second node exists for replica sending 
+			fd = createConnection(temp.ip ,temp.port);
+			send(fd ,msg.c_str() ,msg.size() ,0);
+			close(fd);
+			cout<<"Replica Send to "<<temp.nodeId<<endl;
+		}
+
 	}
 
 	exit(0);

@@ -15,8 +15,6 @@ extern int DIGITS;
 
 void client()
 {
-	cout<<"Node Client Started :"<<endl;
-
 	while(1)
 	{
 		cout<<"# ";
@@ -31,6 +29,11 @@ void client()
 
 		if( command_splited[0] == "join" && command_splited.size() == 4) 
 		{
+			if(command_splited[3] == to_string(selfAdd.port))
+			{
+				cout<<"You cant Request to your self"<<endl;
+				continue;
+			}
 			join(command_splited);	
 		}
 		else if (command_splited[0] == "set" && command_splited.size() == 3) 

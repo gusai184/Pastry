@@ -46,11 +46,24 @@ string getIP()
 	
 }
 
+void menu()
+{
+	cout<<"---------List of Commands-------------"<<endl;
+	cout<<"\t1) join ID IP PORT"<<endl;
+	cout<<"\t2) set key value"<<endl;
+	cout<<"\t3) get key "<<endl;
+	cout<<"\t4) lt"<<endl;
+	cout<<"\t5) ht"<<endl;
+	cout<<"\t6) rt"<<endl;
+	cout<<"\t7) nt"<<endl;
+	cout<<"\t8) all"<<endl;
+	cout<<"\t9) exit"<<endl<<endl;
+}
 
 int main()
 {
 	cout<<"--------------------Pastry Node--------------------"<<endl<<endl;
-	cout<<"Enter PORT For Node :";
+	cout<<"PORT :";
 	string p ;
 	getline(cin,p);
 
@@ -58,7 +71,7 @@ int main()
 	
 	//Gets IP of the machine in string
 	string ip = getIP();
-	cout<<"IP Address Of Node :"<<ip<<endl;
+	cout<<"IP Address : "<<ip<<endl;
 	
 	string temp;
 	//cout<<"Enter Node Id :";
@@ -69,11 +82,11 @@ int main()
 
 	//Create ID and Intialize Node Tables
 	createNode(ip, port);
-	cout<<"Node created with nodeId = "<<nodeId<<endl;
+	cout<<"NodeId = "<<nodeId<<endl<<endl;
 	
 	//creates Server On thread 
 	startServer();
-
+	menu();
 	//Periodically Updates Neighbour set
 	repairneighbourSet();
 	

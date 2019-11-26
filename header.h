@@ -43,7 +43,7 @@ void addToLeafSet(NodeAddress n);
 void printleafSet();
 void repairLeafSet(NodeAddress failednode);
 NodeAddress getClosestLeafNode(string newnodeId);
-NodeAddress getClosestLeafNodeForReplica(string key);
+NodeAddress getClosestLeafNodeForReplica(string key, string skipnodeid);
 
 //neighbourset.cpp
 void sendNeighbourSet(vector<string> token);

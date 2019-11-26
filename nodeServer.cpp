@@ -154,6 +154,7 @@ void * clientRequestThread(void * fd)
       recieveLeafSet(token);
       //printleafSet();
       broadCast();
+
     }
     else if( token[0] == "neighbourSet")
     {
@@ -185,7 +186,13 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "addkeyvalue")     
     {
     	addToHashTable(token);
-    	//sprinthashTable();
+      cout<<endl<<"Replica Recieved"<<endl;
+      for(int i=1 ;i<token.size() ;i+=2)
+      {
+        cout<<token[i]<<" ";
+      }
+      cout<<endl;
+    	printhashTable();
     }
 
     else if(token[0] == "rdaddkeyvalue")     

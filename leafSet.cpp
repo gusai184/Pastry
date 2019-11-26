@@ -195,18 +195,18 @@ void repairLeafSet(NodeAddress failednode)
 
 }
 
-NodeAddress getClosestLeafNodeForReplica(string key)
+NodeAddress getClosestLeafNodeForReplica(string key, string skipnodeid)
 {
 	int max_prefix_match = -1 ;
 	int min_diff = INT_MAX;
 
 	NodeAddress clostestNode;
-
+	clostestNode.nodeId = "empt";
 	f(i,0,L)
 	{
 		NodeAddress node = leafSet[i];
 
-		if( node.nodeId != "empt" )
+		if( node.nodeId != "empt" && node.nodeId != skipnodeid )
 		{
 			int prematch =  prefixMatch(node.nodeId, key);
 
