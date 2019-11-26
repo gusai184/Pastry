@@ -40,13 +40,24 @@ void sendKeyReplica(string key, string val)
 	close(fd);	
 }
 
+void sendReplicaonJoining(vector<string> token)
+{
+	for(int i=1;i<token.size();i+=2)	
+	{
+		string key = token[i];
+		string value = token[i+1];
+		hashTable[key] = value;
+		sendKeyReplica(key,value);
+	}
+}
+
 void redistributeHashTable(vector<string> token)
 {
 	string newNodeId = token[1];
 	string newNodeIP = token[2];
 	int newNodeport = stoi(token[3]);
 
-	string msg = "addkeyvalue ";
+	string msg = "rdaddkeyvalue ";
 	vector<string> veckey;
 	for(auto pair : hashTable)
 	{

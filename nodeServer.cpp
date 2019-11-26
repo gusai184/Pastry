@@ -185,7 +185,14 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "addkeyvalue")     
     {
     	addToHashTable(token);
-    	//printhashTable();
+    	//sprinthashTable();
+    }
+
+    else if(token[0] == "rdaddkeyvalue")     
+    {
+      addToHashTable(token);
+      sendReplicaonJoining(token);
+      //sprinthashTable();
     }
     else if(token[0] == "getRTentry")
     {
