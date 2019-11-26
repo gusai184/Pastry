@@ -127,7 +127,7 @@ void printrouteTable()
 			cout<<routeTable[i][j].nodeId << " ";
 		cout<<endl;
 	}
-	cout<<endl;
+	cout<<endl<<endl;
 }
 
 

@@ -117,13 +117,13 @@ void sendLeafSet(vector<string> token)
 
 	int client_fd = createConnection(token[2], stoi(token[3]));
 	send(client_fd ,msg.c_str() ,msg.size() ,0);
-	cout<<endl<<"LeafSet sent .."<<msg<<endl; 	
+	//cout<<endl<<"LeafSet sent .."<<msg<<endl; 	
 }
 
 
 void recieveLeafSet(vector<string> token)
 {
-	cout<<endl<<"LeafSet received ... "<<endl;
+	//cout<<endl<<"LeafSet received ... "<<endl;
 	for(int i=1 ;i<token.size() ;i+=3)
 	{
 		NodeAddress temp;
@@ -227,5 +227,5 @@ void printleafSet()
 	cout<<"-------------------Leaf Table---------------------"<<endl;
 	f(i,0,L)
 		cout<<leafSet[i].nodeId<<" ";
-	cout<<endl;
+	cout<<endl<<endl;
 }

@@ -49,6 +49,7 @@ string getIP()
 
 int main()
 {
+	cout<<"--------------------Pastry Node--------------------"<<endl<<endl;
 	cout<<"Enter PORT For Node :";
 	string p ;
 	getline(cin,p);
@@ -57,11 +58,10 @@ int main()
 	
 	//Gets IP of the machine in string
 	string ip = getIP();
-	
-	cout<<"IP Address Of Node :"<<ip<<endl<<endl;
+	cout<<"IP Address Of Node :"<<ip<<endl;
 	
 	string temp;
-	cout<<"Enter Node Id :";
+	//cout<<"Enter Node Id :";
 	//getline(cin,temp);
 	temp = p;
 	nodeId = temp;
@@ -69,13 +69,13 @@ int main()
 
 	//Create ID and Intialize Node Tables
 	createNode(ip, port);
-	cout<<"Node created with nodeId = "<<nodeId<<endl<<endl;
+	cout<<"Node created with nodeId = "<<nodeId<<endl;
 	
 	//creates Server On thread 
 	startServer();
 
 	//Periodically Updates Neighbour set
-	// repairneighbourSet();
+	repairneighbourSet();
 	
 	// //Client Function takes commands from user 
 	client();

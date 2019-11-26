@@ -27,13 +27,12 @@ void joinHandler(vector<string> token)
 		sendNeighbourSet(token);
 	}
 
-	cout<<endl<<"Routing Table Send"<<endl;
+	//cout<<endl<<"Routing Table Send"<<endl;
 	sendRoutingTable(token);
 
   int flag = 1, fd;
   NodeAddress temp;
 
-  cout<<"Checking Leaf set"<<endl;
 	//check in leafset for closest node
 	temp =  getClosestLeafNode(newNodeId);
 
@@ -45,7 +44,7 @@ void joinHandler(vector<string> token)
     if(isNodeActive(temp) == false)
     {
         //Repair algorithm
-        cout<<"Repair leafSet algorithm Running for "<<temp.nodeId<<endl;
+        cout<<"Repairing leafSet Running for "<<temp.nodeId<<endl;
         repairLeafSet(temp);
         printleafSet();
         temp =  getClosestLeafNode(newNodeId);
@@ -54,12 +53,12 @@ void joinHandler(vector<string> token)
     {
       int fd = createConnection(temp.ip, temp.port);
       send(fd ,msg.c_str() ,msg.size() ,0);
-      cout<<"forward Msg Sent 1 "<<temp.port<<endl;
+      //cout<<"forward Msg Sent 1 "<<temp.port<<endl;
       return;
     }
 	}
 
-  cout<<endl<<"Routing checking starts here ..."<<endl;
+  //cout<<endl<<"Routing checking starts here ..."<<endl;
 	int j = index(newNodeId[l]);
   fd = -1;
 	if( routeTable[l][j].nodeId != "empt")
@@ -69,7 +68,7 @@ void joinHandler(vector<string> token)
     if(isNodeActive(routeTable[l][j]) == false)
     {
       // repair route table algorithm
-      cout << "repair routetable algorithm" << endl;
+      cout << "Repairing Routetable for "<< routeTable[l][j].nodeId << endl;
       repairRouteTable(l, j);
       if( routeTable[l][j].nodeId != "empt")
         fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
@@ -80,12 +79,12 @@ void joinHandler(vector<string> token)
     if(fd != -1)
     {
       send(fd ,msg.c_str() ,msg.size() ,0);
-      cout<<"forward Msg Sent 2 "<<routeTable[l][j].port<<endl;
+      //cout<<"forward Msg Sent 2 "<<routeTable[l][j].port<<endl;
       return;
     }
 	}
 
-  cout<<endl<<"Rare condition starts here ..."<<endl;
+ // cout<<endl<<"Rare condition starts here ..."<<endl;
   //rare condition
 	temp = getClosestNode(newNodeId);
 
@@ -94,11 +93,11 @@ void joinHandler(vector<string> token)
 		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
 		int fd = createConnection(temp.ip, temp.port);
 		send(fd ,msg.c_str() ,msg.size() ,0);
-		cout<<"forward Msg Sent 3 "<<temp.port<<endl;
+		//cout<<"forward Msg Sent 3 "<<temp.port<<endl;
 	}
 	else
 	{
-		cout<<"I am closest in Rear conditon"<<endl;
+		//cout<<"I am closest in Rear conditon"<<endl;
 
 		NodeAddress newNode;
 
@@ -110,11 +109,11 @@ void joinHandler(vector<string> token)
 
 		sendLeafSet(token);
 
-    string msg = "msg_ack join successfully to system.";
+    string msg = "msg_ack Joined successfully to Pastry Network.";
     int fd = createConnection(newNode.ip ,newNode.port);
     send(fd ,msg.c_str() ,msg.size() ,0);
 
-		cout<<"Leaf Set Send"<<endl;
+		//cout<<"Leaf Set Send"<<endl;
 	}
 
 }
@@ -131,7 +130,7 @@ void * clientRequestThread(void * fd)
       return NULL;
     }
 
-    cout<<"==> Got message "<<cmd<<endl;
+    //cout<<"==> Got message "<<cmd<<endl;
     vector<string> token = split(string(cmd));
 
     if( token[0] == "join")
@@ -153,18 +152,18 @@ void * clientRequestThread(void * fd)
     else if( token[0] == "leafBroadcast")
     {
       recieveLeafSet(token);
-      printleafSet();
+      //printleafSet();
       broadCast();
     }
     else if( token[0] == "neighbourSet")
     {
     	receiveNeighbourSet(token);
-    	printneighbourSet();
+    	//printneighbourSet();
     }
     else if(token[0] == "leafSet")
     {
     	recieveLeafSet(token);
-    	printleafSet();
+    	//printleafSet();
     }
     else if(token[0] == "getleafSet")
     {
@@ -173,20 +172,20 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "routingTable")
     {
     	receiveRoutingTable(token);
-    	printrouteTable();
+    	//printrouteTable();
     }
     else if(token[0] == "broadcast")
     {
     	updateStateTables(token);
     	//Redistribute hash table
     	redistributeHashTable(token);
-    	print();
+    	//print();
     	
     }
     else if(token[0] == "addkeyvalue")     
     {
     	addToHashTable(token);
-    	printhashTable();
+    	//printhashTable();
     }
     else if(token[0] == "getRTentry")
     {
@@ -256,7 +255,7 @@ void getAck(vector<string> token)
 {
 	f(i,1,token.size())
 		cout<<token[i]<<" ";
-	cout<<endl<<"# ";
+	cout<<endl;
 
 }
 

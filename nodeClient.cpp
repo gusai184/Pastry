@@ -45,6 +45,26 @@ void client()
 		{
 			gracefulExit();
 		}
+		else if( command_splited[0] == "lt")
+		{
+			printleafSet();
+		}
+		else if( command_splited[0] == "nt")
+		{
+			printneighbourSet();
+		}
+		else if( command_splited[0] == "rt")
+		{
+			printrouteTable();
+		}
+		else if(command_splited[0] == "ht" )
+		{
+			printhashTable();
+		}
+		else if(command_splited[0] == "all" )
+		{
+			print();
+		}
 		else
 		{
 			cout<<"Invalid command"<<endl;
@@ -64,8 +84,8 @@ void setKey(vector<string> command)
 		
 	//string keyhash = md5(command[1]).substr(0,DIGITS);
 	string keyhash = command[1];
-	cout<<"key hash : "<<keyhash<<endl;
-		string cmd = command[0] + " " + command[1] + " " + command[2] + " " +keyhash + " "+selfAdd.ip + " " + to_string(selfAdd.port);
+	//cout<<"key hash : "<<keyhash<<endl;
+	string cmd = command[0] + " " + command[1] + " " + command[2] + " " +keyhash + " "+selfAdd.ip + " " + to_string(selfAdd.port);
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 }
 
@@ -80,7 +100,7 @@ void getKey(vector<string>  command)
 		
 	//string keyhash = md5(command[1]).substr(0,DIGITS);
 	string keyhash = command[1];
-	cout<<"key hash : "<<keyhash<<endl;
+	//cout<<"key hash : "<<keyhash<<endl;
 	string cmd = command[0] + " " + command[1] + " " +keyhash + " "+selfAdd.ip + " " + to_string(selfAdd.port);
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 

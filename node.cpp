@@ -129,7 +129,7 @@ bool isNodeActive(NodeAddress node)
 
 void broadCast()
 {
-	cout<<"Broadcast FUnction"<<endl;
+	//cout<<"Broadcast FUnction"<<endl;
 	unordered_map <string, int> mp;
 	string msg = "broadcast " + selfAdd.nodeId + " "+selfAdd.ip + " " + to_string(selfAdd.port) + " ";
 	for(auto node : leafSet)
@@ -182,7 +182,7 @@ void broadCast()
 
 		if(mp1[node.nodeId])
 			continue;
-		cout << "broadcast msg send to " << node.nodeId << endl;
+		//cout << "broadcast msg send to " << node.nodeId << endl;
 		int fd = createConnection(node.ip, node.port);
 		send(fd, msg.c_str(), msg.size(), 0);
 		mp1[node.nodeId] = 1;
@@ -197,7 +197,7 @@ void broadCast()
 
 		if(mp1[node.nodeId])
 			continue;
-		cout << "broadcast msg send to " << node.nodeId << endl;
+		//cout << "broadcast msg send to " << node.nodeId << endl;
 		int fd = createConnection(node.ip, node.port);
 		send(fd, msg.c_str(), msg.size(), 0);
 		mp1[node.nodeId] = 1;
@@ -213,7 +213,7 @@ void broadCast()
 
 			if(mp1[node.nodeId])
 				continue;
-			cout << "broadcast msg send to " << node.nodeId << endl;
+			//cout << "broadcast msg send to " << node.nodeId << endl;
 			int fd = createConnection(node.ip, node.port);
 			send(fd, msg.c_str(), msg.size(), 0);
 			mp1[node.nodeId] = 1;

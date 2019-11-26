@@ -128,14 +128,14 @@ int createConnection(string ip ,int port)
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
     	
-    	perror("ERROR opening socket");
+    	//perror("ERROR opening socket");
         return -1;
         //exit(1);
     }
 	
     listener_ip = gethostbyname(ip.c_str());
     if (listener_ip == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
+        //fprintf(stderr,"ERROR, no such host\n");
         return -1;
         //exit(0);
     }
@@ -146,7 +146,7 @@ int createConnection(string ip ,int port)
     listener_address.sin_port = htons(listener_port);
    
     if (connect(server_fd, (struct sockaddr*)&listener_address, sizeof(listener_address)) < 0) {
-        cout<<"ERROR connecting "<<ip<<" "<<to_string(port)<<endl;
+        //cout<<"ERROR connecting "<<ip<<" "<<to_string(port)<<endl;
         return -1;
     }
 
@@ -155,6 +155,8 @@ int createConnection(string ip ,int port)
 
 void print()
 {
+    cout<<"*************************************************************************"<<endl;
+    cout<<endl;
 	printleafSet();
 	cout<<endl;
 	printneighbourSet();
@@ -163,5 +165,6 @@ void print()
 	cout<<endl;
 	printhashTable();
 	cout<<endl;
+    cout<<"*************************************************************************"<<endl;
 }
 

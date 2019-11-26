@@ -50,12 +50,12 @@ void sendNeighbourSet(vector<string> token)
 
 	int client_fd = createConnection(token[2], stoi(token[3]));
 	send(client_fd ,msg.c_str() ,msg.size() ,0);
-	cout<<endl<<"NeighbourSet sent .."<<endl; 
+	//cout<<endl<<"NeighbourSet sent .."<<endl; 
 }
 
 void receiveNeighbourSet(vector<string> token)
 {
-	cout<<endl<<"NeighbourSet received ... "<<endl;
+	//cout<<endl<<"NeighbourSet received ... "<<endl;
 	for(int i=1 ;i<token.size() ;i+=3)
 	{
 		NodeAddress temp;
@@ -67,22 +67,14 @@ void receiveNeighbourSet(vector<string> token)
 }
 
 
-void printneighbourSet()
-{
-
-	cout<<"-------------------Neighbour Table---------------------"<<endl;
-	f(i,0,M)
-		if(neighbourSet[i].second.nodeId!="empt")
-			cout<<neighbourSet[i].second.nodeId<<":"<<neighbourSet[i].first << endl;
-}
 
 void * neighbourThread(void * args)
 {
 	while(1)
 	{
-		sleep(20);
-
-		cout<<"Periodic Updation Started"<<endl;
+		sleep(5);
+		bool isNodeFail = false;
+		//cout<<"Periodic Updation Started"<<endl;
 		f(i,0,M)
 		{
 			NodeAddress node = neighbourSet[i].second;
@@ -91,8 +83,12 @@ void * neighbourThread(void * args)
 			{
 				neighbourSet[i].second.nodeId = "empt";
 				neighbourSet[i].first = 9999.0;	
+				isNodeFail = true;
 			}
 		}
+
+		if(isNodeFail == false)
+			continue;
 
 		sort(neighbourSet.begin(), neighbourSet.end(), compare1);
 
@@ -118,3 +114,13 @@ void repairneighbourSet()
    pthread_create(&thread_id, NULL, neighbourThread, (void *)NULL); 
 }
 
+
+void printneighbourSet()
+{
+
+	cout<<"-------------------Neighbour Table---------------------"<<endl;
+	f(i,0,M)
+		if(neighbourSet[i].second.nodeId!="empt")
+			cout<<neighbourSet[i].second.nodeId<<":"<<neighbourSet[i].first << endl;
+	cout<<endl;
+}
