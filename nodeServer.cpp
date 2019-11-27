@@ -61,29 +61,33 @@ void joinHandler(vector<string> token)
   //cout<<endl<<"Routing checking starts here ..."<<endl;
 	int j = index(newNodeId[l]);
   fd = -1;
-	if( routeTable[l][j].nodeId != "empt")
-	{
-		string msg = "join " + to_string(l+1) + " " +token[2]+" "+token[3] + " "+token[4];
-		
-    if(isNodeActive(routeTable[l][j]) == false)
-    {
-      // repair route table algorithm
-      cout << "Repairing Routetable for "<< routeTable[l][j].nodeId << endl;
-      repairRouteTable(l, j);
-      if( routeTable[l][j].nodeId != "empt")
+
+  if( routeTable[l][j].nodeId != "empt")
+  {
+      if(isNodeActive(routeTable[l][j]) == false)
+      {
+          // repair route table algorithm
+          cout << "Repairing Routetable for "<< routeTable[l][j].nodeId<< endl;
+          repairRouteTable(l, j);
+          if( routeTable[l][j].nodeId != "empt" && isNodeActive(routeTable[l][j]))
+          { 
+            fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
+            string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
+            send(fd ,msg.c_str() ,msg.size() ,0);
+            //cout<<"forward Msg Sent 2 (from Set key)from routing table"<<routeTable[l][j].port<<endl;
+            return ;
+          }
+          printrouteTable();
+      }  
+      else
+      {
         fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
-      printrouteTable();
-    }
-    
-
-    if(fd != -1)
-    {
-      send(fd ,msg.c_str() ,msg.size() ,0);
-      //cout<<"forward Msg Sent 2 "<<routeTable[l][j].port<<endl;
-      return;
-    }
-	}
-
+        string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
+        send(fd ,msg.c_str() ,msg.size() ,0);
+        //cout<<"forward Msg Sent 2 (from Set key)from routing table"<<routeTable[l][j].port<<endl;
+        return ;
+      }
+  }
  // cout<<endl<<"Rare condition starts here ..."<<endl;
   //rare condition
 	temp = getClosestNode(newNodeId);
@@ -186,13 +190,13 @@ void * clientRequestThread(void * fd)
     else if(token[0] == "addkeyvalue")     
     {
     	addToHashTable(token);
-      cout<<endl<<"Replica Recieved"<<endl;
+      cout<<endl<<"Replica Recieved ";
       for(int i=1 ;i<token.size() ;i+=2)
       {
         cout<<token[i]<<" ";
       }
       cout<<endl;
-    	printhashTable();
+    	//printhashTable();
     }
 
     else if(token[0] == "rdaddkeyvalue")     

@@ -72,7 +72,7 @@ void * neighbourThread(void * args)
 {
 	while(1)
 	{
-		sleep(10);
+		sleep(60);
 		bool isNodeFail = false;
 		//cout<<"Periodic Updation Started"<<endl;
 		f(i,0,M)
