@@ -44,7 +44,7 @@ void sendNeighbourSet(vector<string> token)
 
 	f(i,0,M)
 	{
-		if(neighbourSet[i].second.nodeId != "empt")
+		if(neighbourSet[i].second.nodeId != "----")
 			msg += neighbourSet[i].second.nodeId + " " + neighbourSet[i].second.ip + " " + to_string(neighbourSet[i].second.port) + " "; 
 	}
 
@@ -79,9 +79,9 @@ void * neighbourThread(void * args)
 		{
 			NodeAddress node = neighbourSet[i].second;
 
-			if( node.nodeId != "empt" && isNodeActive(node)==false)
+			if( node.nodeId != "----" && isNodeActive(node)==false)
 			{
-				neighbourSet[i].second.nodeId = "empt";
+				neighbourSet[i].second.nodeId = "----";
 				neighbourSet[i].first = 9999.0;	
 				isNodeFail = true;
 			}
@@ -96,7 +96,7 @@ void * neighbourThread(void * args)
 		{
 			NodeAddress node = neighbourSet[i].second;
 
-			if( node.nodeId != "empt")
+			if( node.nodeId != "----")
 			{
 				string msg = "getneighbourset "+ nodeId+" "+selfAdd.ip+" "+to_string(selfAdd.port);
 
@@ -120,7 +120,7 @@ void printneighbourSet()
 
 	cout<<"-------------------Neighbour Table---------------------"<<endl;
 	f(i,0,M)
-		if(neighbourSet[i].second.nodeId!="empt")
+		if(neighbourSet[i].second.nodeId!="----")
 			cout<<neighbourSet[i].second.nodeId<<":"<<neighbourSet[i].first << endl;
 	cout<<endl;
 }

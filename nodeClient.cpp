@@ -85,9 +85,9 @@ void setKey(vector<string> command)
 		return ;
 	} 
 		
-	//string keyhash = md5(command[1]).substr(0,DIGITS);
-	string keyhash = command[1];
-	//cout<<"key hash : "<<keyhash<<endl;
+	string keyhash = md5(command[1]).substr(0,DIGITS);
+	//string keyhash = command[1];
+	cout<<"key hash : "<<keyhash<<endl;
 	string cmd = command[0] + " " + command[1] + " " + command[2] + " " +keyhash + " "+selfAdd.ip + " " + to_string(selfAdd.port);
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 }
@@ -101,9 +101,9 @@ void getKey(vector<string>  command)
 		return ;
 	} 
 		
-	//string keyhash = md5(command[1]).substr(0,DIGITS);
-	string keyhash = command[1];
-	//cout<<"key hash : "<<keyhash<<endl;
+	string keyhash = md5(command[1]).substr(0,DIGITS);
+	//string keyhash = command[1];
+	cout<<"key hash : "<<keyhash<<endl;
 	string cmd = command[0] + " " + command[1] + " " +keyhash + " "+selfAdd.ip + " " + to_string(selfAdd.port);
 	send(server_fd ,cmd.c_str() ,cmd.size() ,0);
 

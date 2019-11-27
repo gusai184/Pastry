@@ -37,7 +37,7 @@ void addToLeafSet(NodeAddress n)
 	{
 		int index = 0;
 
-		while( index<(L/2) && leafSet[index].nodeId != "empt")
+		while( index<(L/2) && leafSet[index].nodeId != "----")
 		{
 			index++;
 		}
@@ -68,7 +68,7 @@ void addToLeafSet(NodeAddress n)
 	{
 		int index = L/2;
 
-		while( index<(L) && leafSet[index].nodeId != "empt")
+		while( index<(L) && leafSet[index].nodeId != "----")
 		{
 			index++;
 		}
@@ -111,7 +111,7 @@ void sendLeafSet(vector<string> token)
 
 	f(i,0,L)
 	{
-		if(leafSet[i].nodeId != "empt")
+		if(leafSet[i].nodeId != "----")
 			msg += leafSet[i].nodeId + " " + leafSet[i].ip + " " + to_string(leafSet[i].port) + " "; 
 	}
 
@@ -156,7 +156,7 @@ void repairLeafSet(NodeAddress failednode)
 	f(i,0,L)
 	{
 		if(!isNodeActive(leafSet[i]))
-			leafSet[i].nodeId = "empt";
+			leafSet[i].nodeId = "----";
 	}
 
 	NodeAddress node = selfAdd;
@@ -165,7 +165,7 @@ void repairLeafSet(NodeAddress failednode)
 	{
 		f(i,0,L/2)
 		{
-			if(leafSet[i].nodeId != "empt")
+			if(leafSet[i].nodeId != "----")
 			{
 				node = leafSet[i];
 				break;
@@ -177,7 +177,7 @@ void repairLeafSet(NodeAddress failednode)
 	{
 		rf(i,L-1,L/2)
 		{
-			if(leafSet[i].nodeId != "empt")
+			if(leafSet[i].nodeId != "----")
 			{
 				node = leafSet[i];
 				break;
@@ -201,12 +201,12 @@ NodeAddress getClosestLeafNodeForReplica(string key, string skipnodeid)
 	int min_diff = INT_MAX;
 
 	NodeAddress clostestNode;
-	clostestNode.nodeId = "empt";
+	clostestNode.nodeId = "----";
 	f(i,0,L)
 	{
 		NodeAddress node = leafSet[i];
 
-		if( node.nodeId != "empt" && node.nodeId != skipnodeid )
+		if( node.nodeId != "----" && node.nodeId != skipnodeid )
 		{
 			int prematch =  prefixMatch(node.nodeId, key);
 

@@ -17,12 +17,12 @@ extern int DIGITS;
 void createNode(string ip, int port)
 {
 	NodeAddress temp;
-	temp.nodeId = "empt";
+	temp.nodeId = "----";
 	pair<double, NodeAddress> t;
 	t.first = 9999.0;
 	t.second = temp;
 
-	//nodeId = md5(ip + to_string(port)).substr(0, ROW);
+	nodeId = md5(ip + to_string(port)).substr(0, ROW);
 
 	//Initialize leafSet, neighbourSet and routeTable
 	selfAdd.nodeId = nodeId;
@@ -57,7 +57,7 @@ NodeAddress getClosestNode(string newnodeId)
 	//check in leaf Node
 	for(auto leafNode : leafSet)
 	{
-		if( leafNode.nodeId != "empt" && prefixMatch(leafNode.nodeId, newnodeId) == max_prefix_match && diff(leafNode.nodeId, newnodeId) < min_diff )
+		if( leafNode.nodeId != "----" && prefixMatch(leafNode.nodeId, newnodeId) == max_prefix_match && diff(leafNode.nodeId, newnodeId) < min_diff )
 		{
 			max_prefix_match = prefixMatch(leafNode.nodeId, newnodeId);
 			clostestNode = leafNode;
@@ -69,7 +69,7 @@ NodeAddress getClosestNode(string newnodeId)
 	{
 		NodeAddress nbNode = neighbourNode.second;
 
-		if( nbNode.nodeId == "empt" || isNodeActive(nbNode) == false )
+		if( nbNode.nodeId == "----" || isNodeActive(nbNode) == false )
 		{
 			continue;
 		}
@@ -84,7 +84,7 @@ NodeAddress getClosestNode(string newnodeId)
 	//check in Routing table
 	for(auto routetableNode : routeTable[max_prefix_match])
 	{
-		if( routetableNode.nodeId == "empt")
+		if( routetableNode.nodeId == "----")
 		{
 			continue;
 		}
@@ -134,7 +134,7 @@ void broadCast()
 	string msg = "broadcast " + selfAdd.nodeId + " "+selfAdd.ip + " " + to_string(selfAdd.port) + " ";
 	for(auto node : leafSet)
 	{
-		if(node.nodeId == "empt")
+		if(node.nodeId == "----")
 			continue;
 
 		if(mp[node.nodeId])
@@ -148,7 +148,7 @@ void broadCast()
 	{
 		NodeAddress node = nNode.second;
 
-		if(node.nodeId == "empt")
+		if(node.nodeId == "----")
 			continue;
 
 		if(mp[node.nodeId])
@@ -163,7 +163,7 @@ void broadCast()
 		f(j, 0, COL)
 		{
 			NodeAddress node = routeTable[i][j];
-			if(node.nodeId == "empt")
+			if(node.nodeId == "----")
 				continue;
 
 			if(mp[node.nodeId])
@@ -177,7 +177,7 @@ void broadCast()
 	unordered_map <string, int> mp1;
 	for(auto node : leafSet)
 	{
-		if(node.nodeId == "empt")
+		if(node.nodeId == "----")
 			continue;
 
 		if(mp1[node.nodeId])
@@ -192,7 +192,7 @@ void broadCast()
 	{
 		NodeAddress node = nNode.second;
 
-		if(node.nodeId == "empt")
+		if(node.nodeId == "----")
 			continue;
 
 		if(mp1[node.nodeId])
@@ -208,7 +208,7 @@ void broadCast()
 		f(j, 0, COL)
 		{
 			NodeAddress node = routeTable[i][j];
-			if(node.nodeId == "empt" || node.nodeId == nodeId)
+			if(node.nodeId == "----" || node.nodeId == nodeId)
 				continue;
 
 			if(mp1[node.nodeId])

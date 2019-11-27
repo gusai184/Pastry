@@ -62,14 +62,14 @@ void joinHandler(vector<string> token)
 	int j = index(newNodeId[l]);
   fd = -1;
 
-  if( routeTable[l][j].nodeId != "empt")
+  if( routeTable[l][j].nodeId != "----")
   {
       if(isNodeActive(routeTable[l][j]) == false)
       {
           // repair route table algorithm
           cout << "Repairing Routetable for "<< routeTable[l][j].nodeId<< endl;
           repairRouteTable(l, j);
-          if( routeTable[l][j].nodeId != "empt" && isNodeActive(routeTable[l][j]))
+          if( routeTable[l][j].nodeId != "----" && isNodeActive(routeTable[l][j]))
           { 
             fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
             string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];

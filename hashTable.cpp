@@ -28,14 +28,14 @@ void sendKeyReplica(string key, string val)
 {
 	NodeAddress temp = getClosestLeafNodeForReplica(key,nodeId);
 
-	if(temp.nodeId == "empt")
+	if(temp.nodeId == "----")
 		return;
 
 	if( isNodeActive(temp) == false)
 	{
 		repairLeafSet(temp);
 		temp = getClosestLeafNodeForReplica(key,nodeId);
-		if(temp.nodeId == "empt")
+		if(temp.nodeId == "----")
 			return;
 	}
 
@@ -68,8 +68,8 @@ void redistributeHashTable(vector<string> token)
 	{
 		string key = pair.first;
 		string value = pair.second;
-		//string keyhash = md5(key).substr(0,DIGITS);
-		string keyhash = key;
+		string keyhash = md5(key).substr(0,DIGITS);
+		//string keyhash = key;
 
 		int max_prefix_match = prefixMatch(nodeId, keyhash);
 		int min_diff = diff(nodeId, keyhash);
@@ -143,14 +143,14 @@ void setKeyHandler(vector<string> token)
 	int j = index(keyhash[l]);
 
 	int fd = -1;
-	if( routeTable[l][j].nodeId != "empt")
+	if( routeTable[l][j].nodeId != "----")
 	{
 		if(isNodeActive(routeTable[l][j]) == false)
     	{
 	      	// repair route table algorithm
 	      	cout << "Repairing Routetable for "<< routeTable[l][j].nodeId<< endl;
 	      	repairRouteTable(l, j);
-	      	if( routeTable[l][j].nodeId != "empt" && isNodeActive(routeTable[l][j]))
+	      	if( routeTable[l][j].nodeId != "----" && isNodeActive(routeTable[l][j]))
 			{	
 		    	fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
 				string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
@@ -247,14 +247,14 @@ void getKeyHandler(vector<string> token)
 
 	// cout<<endl<<"Routing Get key checking starts here ..."<<endl;
 	int fd = -1;
-	if( routeTable[l][j].nodeId != "empt")
+	if( routeTable[l][j].nodeId != "----")
 	{
 		if(isNodeActive(routeTable[l][j]) == false)
     	{
 	      	// repair route table algorithm
 	      	cout << "Repairing Routetable for "<< routeTable[l][j].nodeId<< endl;
 	      	repairRouteTable(l, j);
-	      	if( routeTable[l][j].nodeId != "empt" && isNodeActive(routeTable[l][j]))
+	      	if( routeTable[l][j].nodeId != "----" && isNodeActive(routeTable[l][j]))
 			{	
 		    	fd = createConnection(routeTable[l][j].ip ,routeTable[l][j].port);
 				string msg = token[0] + " " + token[1] + " " +token[2]+" "+token[3]+" "+token[4] + " "+token[5];
@@ -313,14 +313,14 @@ void gracefulExit()
 		//Get first Closesest node to send replica
 		NodeAddress temp = getClosestLeafNodeForReplica(key,nodeId);
 		
-		if(temp.nodeId == "empt")
+		if(temp.nodeId == "----")
 			break;
 
 		if( isNodeActive(temp) == false)
 		{
 			repairLeafSet(temp);
 			temp = getClosestLeafNodeForReplica(key,nodeId);
-			if(temp.nodeId == "empt")
+			if(temp.nodeId == "----")
 				break;
 		}
 		cout<<"Replica of key "<<key<<" send to "<<temp.nodeId<<endl;
@@ -332,14 +332,14 @@ void gracefulExit()
 		//Get second closeset node to send replica
 		NodeAddress temp1 = getClosestLeafNodeForReplica(key,temp.nodeId);
 		
-		if(temp1.nodeId == "empt")
+		if(temp1.nodeId == "----")
 			continue;
 
 		if( isNodeActive(temp1) == false)
 		{
 			repairLeafSet(temp1);
 			temp1 = getClosestLeafNodeForReplica(key,temp.nodeId);
-			if(temp1.nodeId == "empt")
+			if(temp1.nodeId == "----")
 				continue;
 		}
 		cout<<"Replica of key "<<key<<" send to "<<temp1.nodeId<<endl;
