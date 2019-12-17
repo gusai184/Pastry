@@ -13,7 +13,7 @@ A distributed hash table (DHT) is a decentralized distributed system that provid
  
  ## Command Execution sequence <br>
    1) make 
-   2) ./pastry 
+   2) sudo ./pastry 
    3) port : \<port>
    5) join \<id> \<ip> \<port> 
    6) set \<key> \<value> 
