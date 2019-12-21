@@ -23,5 +23,5 @@ A distributed hash table (DHT) is a decentralized distributed system that provid
 ## References<br>
 [http://rowstron.azurewebsites.net/PAST/pastry.pdf](http://rowstron.azurewebsites.net/PAST/pastry.pdf)<br>
 [http://www.cse.iitd.ernet.in/~srsarangi/csl860/docs/pastry-lec.pdf](http://www.cse.iitd.ernet.in/~srsarangi/csl860/docs/pastry-lec.pdf)<br>
-[https://docs.google.com/document/d/1RTiLzbn8el-D5N875sDR2InlOhb4J_5mHeBUTWJqB6I/edit?usp=sharing](https://docs.google.com/document/d/1RTiLzbn8el-D5N875sDR2InlOhb4J_5mHeBUTWJqB6I/edit?usp=sharing)
+
 
